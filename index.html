@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>51music</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        body {
+            background: linear-gradient(135deg, #0f0c20 0%, #15102a 50%, #060214 100%);
+            color: #f3f4f6;
+            min-height: 100vh;
+            padding: 60px 20px;
+            background-attachment: fixed;
+        }
+        .container { max-width: 900px; margin: 0 auto; position: relative; }
+        
+        header { text-align: center; margin-bottom: 50px; position: relative; }
+        header h1 {
+            font-size: 3.2rem; font-weight: 900; letter-spacing: -1px;
+            background: linear-gradient(45deg, #ff5500, #ff8800);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+        header p { color: #8b85a7; font-size: 1.1rem; }
+
+        /* Кнопка профиля SoundCloud (справа сверху) */
+        .profile-btn {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255, 85, 0, 0.15);
+            color: #ff5500;
+            padding: 8px 18px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255, 85, 0, 0.3);
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .profile-btn:hover {
+            background: #ff5500;
+            color: #fff;
+            transform: scale(1.05);
+        }
+
+        .song-list { display: flex; flex-direction: column; gap: 20px; }
+        .song-item {
+            display: flex; align-items: center; gap: 25px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px; padding: 20px;
+            cursor: pointer; transition: 0.3s; text-decoration: none; color: inherit;
+        }
+        .song-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(5px);
+            border-color: #ff5500;
+        }
+        .song-cover {
+            width: 80px; height: 80px; border-radius: 12px;
+            object-fit: cover; background: #222;
+        }
+        .song-info { flex: 1; }
+        .song-title { font-size: 1.4rem; font-weight: 700; }
+        .song-genre { font-size: 0.8rem; color: #ff5500; text-transform: uppercase; letter-spacing: 1px; }
+        
+        .sc-badge {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.05);
+            padding: 4px 10px;
+            border-radius: 20px;
+            color: #a49ebd;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        @media (max-width: 600px) {
+            .profile-btn { position: relative; top: 0; margin-bottom: 20px; justify-content: center; }
+            header { display: flex; flex-direction: column; align-items: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <!-- Кнопка профиля -->
+            <a href="https://soundcloud.com/denis-invalidov" target="_blank" class="profile-btn">
+                51Invalidov SoundCloud
+            </a>
+            <h1>51music</h1>
+            <p>музыка еееееее </p>
+        </header>
+        <div class="song-list" id="songList"></div>
+    </div>
+
+    <script>
+        // Данные вшиты прямо в код
+        const songsData = [
+            { "id": 1, "title": "Ж И Р О Б А С", "genre": "Сниппет / Сингл", "file": "жиробас (банкомат).mp3", "cover": "covers/1.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
+            { "id": 2, "title": "Ж И Р Н Ы Й  П И Д О Р", "genre": "Сниппет / Сингл", "file": "жирный пидор.MP3", "cover": "covers/2.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
+            { "id": 3, "title": "П У З Ы Р И Щ Е", "genre": "Сниппет / Сингл", "file": "пузырище.MP3", "cover": "covers/3.png", "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
+            { "id": 4, "title": "Я С О В С Е М П У З Ы Р Ь", "genre": "Сниппет / Сингл", "file": "я совсем пузырь.mp3", "cover": "covers/4.png", "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" }
+        ];
+
+        function renderList() {
+            const container = document.getElementById('songList');
+            songsData.forEach(song => {
+                const item = document.createElement('a');
+                item.href = `songs.html?id=${song.id}`;
+                item.className = 'song-item';
+                item.innerHTML = `
+                    <img src="${song.cover}" alt="${song.title}" class="song-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23333%22/%3E%3Ctext x=%2220%22 y=%2245%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%23fff%22%3E51%3C/text%3E%3C/svg%3E'">
+                    <div class="song-info">
+                        <div class="song-genre">${song.genre}</div>
+                        <div class="song-title">${song.title}</div>
+                    </div>
+                    <div class="sc-badge">▶ Слушать на SC</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+        renderList();
+    </script>
+</body>
+</html>
