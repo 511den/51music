@@ -134,8 +134,9 @@
         <div class="song-list" id="songList"></div>
     </div>
 
+    <script src="player.js"></script>
     <script>
-        // ✅ ПРАВИЛЬНЫЕ ПУТИ: обложки в covers/, музыка в sounds/
+        // Данные песен
         const songsData = [
             { 
                 "id": 1, 
@@ -222,6 +223,28 @@
             });
         }
         renderList();
+
+        // Восстановление плеера при загрузке
+        window.addEventListener('load', function() {
+            try {
+                const saved = localStorage.getItem('globalPlayerState');
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if (data.song && data.isPlaying) {
+                        // Находим песню по id
+                        const song = songsData.find(s => s.id === data.song.id);
+                        if (song) {
+                            const audio = new Audio();
+                            audio.src = song.file;
+                            audio.currentTime = data.currentTime || 0;
+                            audio.volume = data.volume || 1;
+                            audio.play().catch(() => {});
+                            window.initGlobalPlayer(song, audio);
+                        }
+                    }
+                }
+            } catch(e) {}
+        });
     </script>
 </body>
 </html>
