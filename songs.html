@@ -97,10 +97,10 @@
             box-shadow: 0 0 20px rgba(180, 124, 255, 0.1);
         }
         .genre-tag.demo {
-            background: linear-gradient(135deg, rgba(180, 124, 255, 0.3), rgba(124, 58, 237, 0.3));
-            color: #d4bfff;
-            border-color: rgba(180, 124, 255, 0.4);
-            box-shadow: 0 0 25px rgba(124, 58, 237, 0.2);
+            background: rgba(0, 255, 200, 0.1);
+            color: #00ffc8;
+            border-color: rgba(0, 255, 200, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.05);
         }
 
         .track-title {
@@ -113,7 +113,6 @@
             line-height: 1.2;
         }
 
-        /* Улучшенный аудиоплеер */
         .audio-wrapper {
             background: rgba(0, 0, 0, 0.4);
             border-radius: 16px;
@@ -191,8 +190,13 @@
         .action-btn.exclusive:hover {
             background: rgba(180, 124, 255, 0.15);
         }
+        .action-btn.demo {
+            background: rgba(0, 255, 200, 0.05);
+            color: #00ffc8;
+            border-color: rgba(0, 255, 200, 0.1);
+            cursor: default;
+        }
 
-        /* Секция с текстами */
         .lyrics-section {
             margin-top: 40px;
             border-top: 1px solid rgba(255,255,255,0.05);
@@ -318,7 +322,8 @@
                 "id": 1,
                 "title": "Ж И Р О Б А С",
                 "genre": "Сингл",
-                "genreType": "default",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "жиробас (банкомат).mp3",
                 "cover": "covers/1.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -329,7 +334,8 @@
                 "id": 2,
                 "title": "Ж И Р Н Ы Й  П И Д О Р",
                 "genre": "Сниппет / Сингл",
-                "genreType": "default",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "жирный пидор.MP3",
                 "cover": "covers/2.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -340,7 +346,8 @@
                 "id": 3,
                 "title": "П У З Ы Р И Щ Е",
                 "genre": "Сниппет / Сингл",
-                "genreType": "default",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "пузырище.MP3",
                 "cover": "covers/3.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -351,7 +358,8 @@
                 "id": 4,
                 "title": "Я С О В С Е М П У З Ы Р Ь",
                 "genre": "Сниппет / Сингл",
-                "genreType": "default",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "я совсем пузырь.mp3",
                 "cover": "covers/4.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -361,8 +369,9 @@
             {
                 "id": 5,
                 "title": "Я ЖИРНЫЙ",
-                "genre": "Демо версия",
-                "genreType": "exclusive",
+                "genre": "Сниппет / НеСингл",
+                "isDemo": true,
+                "isExclusive": true,
                 "file": "Я ЖИРНЫЙ.mp3",
                 "cover": "covers/play.png",
                 "soundcloud": "",
@@ -376,9 +385,7 @@
         const song = ALL_SONGS.find(s => s.id === id);
 
         if (song) {
-            const isExclusive = song.genreType === 'exclusive';
-
-            // Собираем теги жанров
+            // Собираем теги
             let genreTags = '';
             if (song.genre) {
                 const genres = song.genre.split('/').map(g => g.trim());
@@ -386,9 +393,11 @@
                     genreTags += `<span class="genre-tag">${g}</span>`;
                 });
             }
-            if (isExclusive) {
+            if (song.isExclusive) {
                 genreTags += `<span class="genre-tag exclusive">★ Эксклюзив</span>`;
-                genreTags += `<span class="genre-tag demo">Демо</span>`;
+            }
+            if (song.isDemo) {
+                genreTags += `<span class="genre-tag demo">◈ Демо</span>`;
             }
 
             // Блок с текстами
@@ -406,62 +415,4 @@
                     <div class="lyrics-grid">
                         <div class="lyrics-block">
                             <h3><span class="icon">🎤</span> Переделанный текст</h3>
-                            <div class="lyrics-text">${song.lyrics_cover}</div>
-                        </div>
-                        <div class="lyrics-block original">
-                            <h3><span class="icon">📝</span> Оригинальный текст</h3>
-                            <div class="lyrics-text">${song.lyrics_original}</div>
-                        </div>
-                    </div>
-                `;
-            }
-
-            // Кнопка SoundCloud или эксклюзив
-            let actionBtn = '';
-            if (isExclusive || !song.soundcloud) {
-                actionBtn = `<span class="action-btn exclusive">⭐ Эксклюзивный релиз</span>`;
-            } else {
-                actionBtn = `<a href="${song.soundcloud}" target="_blank" class="action-btn soundcloud">🎧 Слушать на SoundCloud</a>`;
-            }
-
-            // Обложка с fallback
-            let coverImg = song.cover;
-            if (!coverImg || coverImg === 'covers/play.png') {
-                coverImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23221f33"/%3E%3Ccircle cx="200" cy="200" r="80" fill="%23ff5500" opacity="0.3"/%3E%3Ctext x="200" y="215" font-family="sans-serif" font-size="40" fill="%23fff" text-anchor="middle"%3E51%3C/text%3E%3C/svg%3E';
-            }
-
-            document.getElementById('songCard').innerHTML = `
-                <div class="top-row">
-                    <div class="cover-wrapper">
-                        <img src="${coverImg}" alt="${song.title}" class="cover-img">
-                    </div>
-                    <div class="track-info">
-                        <div class="genre-container">${genreTags}</div>
-                        <h1 class="track-title">${song.title}</h1>
-                        <div class="audio-wrapper">
-                            <audio controls preload="metadata">
-                                <source src="${song.file}" type="audio/mpeg">
-                                Ваш браузер не поддерживает HTML5 аудио.
-                            </audio>
-                        </div>
-                        <div class="action-buttons">
-                            ${actionBtn}
-                        </div>
-                    </div>
-                </div>
-                <div class="lyrics-section">
-                    ${lyricsHtml}
-                </div>
-            `;
-        } else {
-            document.getElementById('songCard').innerHTML = `
-                <div style="text-align:center; padding:60px 20px;">
-                    <h2 style="color:#ff5500; font-size:2rem;">❌ Песня не найдена</h2>
-                    <p style="color:#8b85a7; margin-top:10px;">Вернитесь на главную и выберите другой трек</p>
-                    <a href="index.html" style="display:inline-block; margin-top:20px; color:#ff5500; text-decoration:none; border:1px solid rgba(255,85,0,0.3); padding:10px 30px; border-radius:30px;">← На главную</a>
-                </div>
-            `;
-        }
-    </script>
-</body>
-</html>
+                            <div class="ly
