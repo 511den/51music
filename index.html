@@ -3,225 +3,774 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>51music</title>
+    <title>51music | Плеер</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body {
             background: linear-gradient(135deg, #0f0c20 0%, #15102a 50%, #060214 100%);
             color: #f3f4f6;
             min-height: 100vh;
-            padding: 60px 20px;
+            padding: 40px 20px;
             background-attachment: fixed;
         }
-        .container { max-width: 900px; margin: 0 auto; position: relative; }
-        
-        header { text-align: center; margin-bottom: 50px; position: relative; }
-        header h1 {
-            font-size: 3.2rem; font-weight: 900; letter-spacing: -1px;
-            background: linear-gradient(45deg, #ff5500, #ff8800);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-        }
-        header p { color: #8b85a7; font-size: 1.1rem; }
-
-        .profile-btn {
-            position: absolute;
-            top: -40px;
-            right: 0;
-            background: rgba(255, 85, 0, 0.15);
-            color: #ff5500;
-            padding: 8px 18px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.9rem;
-            border: 1px solid rgba(255, 85, 0, 0.3);
-            transition: 0.3s;
-            display: flex;
+        .container { max-width: 1000px; margin: 0 auto; }
+        .back-btn {
+            display: inline-flex;
             align-items: center;
             gap: 8px;
+            margin-bottom: 30px;
+            color: #8b85a7;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: 0.3s;
+            padding: 8px 16px;
+            border-radius: 30px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .profile-btn:hover {
-            background: #ff5500;
-            color: #fff;
-            transform: scale(1.05);
+        .back-btn:hover {
+            color: #ff5500;
+            transform: translateX(-5px);
+            background: rgba(255,85,0,0.1);
+            border-color: rgba(255,85,0,0.2);
         }
 
-        .song-list { display: flex; flex-direction: column; gap: 20px; }
-        .song-item {
-            display: flex; align-items: center; gap: 25px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px; padding: 20px;
-            cursor: pointer; transition: 0.3s; text-decoration: none; color: inherit;
+        .song-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
         }
-        .song-item:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: translateX(5px);
-            border-color: #ff5500;
+
+        .top-row {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
         }
-        .song-item.exclusive {
+
+        .cover-wrapper {
+            position: relative;
+        }
+        .cover-img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            aspect-ratio: 1/1;
+            object-fit: cover;
+            background: linear-gradient(135deg, #2a1f3d, #1a1228);
+            transition: transform 0.3s;
+        }
+        .cover-img:hover {
+            transform: scale(1.02);
+        }
+
+        .track-info {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .genre-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+        .genre-tag {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            padding: 4px 14px;
+            border-radius: 30px;
+            background: rgba(255,85,0,0.15);
+            color: #ff5500;
+            border: 1px solid rgba(255,85,0,0.2);
+        }
+        .genre-tag.exclusive {
+            background: rgba(180, 124, 255, 0.2);
+            color: #b47cff;
             border-color: rgba(180, 124, 255, 0.3);
-        }
-        .song-item.exclusive:hover {
-            border-color: #b47cff;
             box-shadow: 0 0 20px rgba(180, 124, 255, 0.1);
         }
-        .song-cover {
-            width: 80px; height: 80px; border-radius: 12px;
-            object-fit: cover; background: #222;
+        .genre-tag.demo {
+            background: rgba(0, 255, 200, 0.1);
+            color: #00ffc8;
+            border-color: rgba(0, 255, 200, 0.2);
+            box-shadow: 0 0 20px rgba(0, 255, 200, 0.05);
         }
-        .song-info { flex: 1; }
-        .song-title { font-size: 1.4rem; font-weight: 700; }
-        .song-genre { 
-            font-size: 0.8rem; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
+
+        .track-title {
+            font-size: 2.8rem;
+            font-weight: 800;
+            margin: 5px 0 20px;
+            background: linear-gradient(45deg, #fff, #b47cff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.2;
         }
-        .song-genre.default { color: #ff5500; }
-        .song-genre.exclusive { 
+
+        .player-wrapper {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 20px;
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+            backdrop-filter: blur(4px);
+        }
+
+        .custom-player {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .play-btn {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #ff5500, #e64a00);
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.25s;
+            box-shadow: 0 4px 20px rgba(255,85,0,0.3);
+            flex-shrink: 0;
+        }
+        .play-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 6px 28px rgba(255,85,0,0.5);
+        }
+        .play-btn:active {
+            transform: scale(0.94);
+        }
+
+        .time-display {
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #b0a9cc;
+            min-width: 45px;
+            text-align: center;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.3px;
+        }
+
+        .progress-wrap {
+            flex: 1;
+            min-width: 120px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .progress-track {
+            flex: 1;
+            height: 5px;
+            border-radius: 10px;
+            background: rgba(255,255,255,0.08);
+            cursor: pointer;
+            position: relative;
+            transition: height 0.2s;
+        }
+        .progress-track:hover {
+            height: 7px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #ff5500, #ff7a2f);
+            box-shadow: 0 0 16px rgba(255,85,0,0.2);
+            transition: width 0.05s linear;
+            position: relative;
+        }
+        .progress-fill::after {
+            content: '';
+            position: absolute;
+            right: -6px;
+            top: -4px;
+            width: 13px;
+            height: 13px;
+            background: #ff5500;
+            border-radius: 50%;
+            box-shadow: 0 0 18px rgba(255,85,0,0.5);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .progress-track:hover .progress-fill::after {
+            opacity: 1;
+        }
+
+        .volume-wrap {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+        .volume-icon {
+            color: #8b85a7;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+        .volume-icon:hover {
+            color: #ff5500;
+        }
+
+        .volume-slider {
+            width: 80px;
+            height: 4px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(255,255,255,0.08);
+            border-radius: 10px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .volume-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ff5500;
+            cursor: pointer;
+            box-shadow: 0 0 12px rgba(255,85,0,0.3);
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+        .volume-slider::-moz-range-thumb {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ff5500;
+            cursor: pointer;
+            border: 2px solid rgba(255,255,255,0.15);
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 6px;
+        }
+        .action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: 0.3s;
+            border: 1px solid transparent;
+        }
+        .action-btn.soundcloud {
+            background: rgba(255, 85, 0, 0.15);
+            color: #ff5500;
+            border-color: rgba(255, 85, 0, 0.2);
+        }
+        .action-btn.soundcloud:hover {
+            background: rgba(255, 85, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255,85,0,0.2);
+        }
+        .action-btn.exclusive {
+            background: rgba(180, 124, 255, 0.1);
             color: #b47cff;
+            border-color: rgba(180, 124, 255, 0.15);
+            cursor: default;
+        }
+        .action-btn.exclusive:hover {
             background: rgba(180, 124, 255, 0.15);
-            padding: 2px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            border: 1px solid rgba(180, 124, 255, 0.2);
         }
-        
-        .sc-badge {
-            font-size: 0.7rem;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 4px 10px;
-            border-radius: 20px;
-            color: #a49ebd;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        .sc-badge.hidden {
-            opacity: 0.3;
+        .action-btn.demo {
+            background: rgba(0, 255, 200, 0.05);
+            color: #00ffc8;
+            border-color: rgba(0, 255, 200, 0.1);
             cursor: default;
         }
 
-        .demo-badge {
-            font-size: 0.6rem;
-            background: linear-gradient(135deg, #b47cff, #7c3aed);
-            color: #fff;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            margin-left: 8px;
-            display: inline-block;
-            vertical-align: middle;
+        .lyrics-section {
+            margin-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 40px;
         }
 
-        @media (max-width: 600px) {
-            .profile-btn { position: relative; top: 0; margin-bottom: 20px; justify-content: center; }
-            header { display: flex; flex-direction: column; align-items: center; }
-            .song-item { flex-wrap: wrap; gap: 15px; }
-            .song-cover { width: 60px; height: 60px; }
+        .lyrics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .lyrics-block {
+            background: rgba(0, 0, 0, 0.2);
+            padding: 24px;
+            border-radius: 16px;
+            border-top: 3px solid #ff5500;
+            transition: 0.3s;
+        }
+        .lyrics-block:hover {
+            background: rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        .lyrics-block.original {
+            border-top: 3px solid #4e486b;
+        }
+        .lyrics-block h3 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            color: #a49ebd;
+            margin-bottom: 15px;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .lyrics-block h3 .icon {
+            font-size: 1.2rem;
+        }
+        .lyrics-text {
+            white-space: pre-line;
+            line-height: 1.8;
+            font-size: 0.95rem;
+            color: #e2e0eb;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        .lyrics-text::-webkit-scrollbar {
+            width: 4px;
+        }
+        .lyrics-text::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.02);
+            border-radius: 4px;
+        }
+        .lyrics-text::-webkit-scrollbar-thumb {
+            background: rgba(255, 85, 0, 0.3);
+            border-radius: 4px;
+        }
+
+        .no-lyrics {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 255, 255, 0.06);
+        }
+        .no-lyrics .icon {
+            font-size: 3rem;
+            display: block;
+            margin-bottom: 15px;
+            opacity: 0.3;
+        }
+        .no-lyrics h3 {
+            color: #6a648a;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+        .no-lyrics p {
+            color: #4a4568;
+            font-size: 0.9rem;
+            margin-top: 8px;
+        }
+
+        .error-message {
+            color: #ff6b6b;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+
+        @media (max-width: 800px) {
+            .top-row {
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+            .cover-wrapper {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+            .track-title {
+                font-size: 2rem;
+                text-align: center;
+            }
+            .genre-container {
+                justify-content: center;
+            }
+            .action-buttons {
+                justify-content: center;
+            }
+            .lyrics-grid {
+                grid-template-columns: 1fr;
+            }
+            .song-card {
+                padding: 20px;
+            }
+            .custom-player {
+                gap: 12px;
+            }
+            .volume-slider {
+                width: 60px;
+            }
+            .volume-wrap {
+                gap: 6px;
+            }
+        }
+        @media (max-width: 480px) {
+            .custom-player {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .progress-wrap {
+                order: 3;
+                flex-basis: 100%;
+            }
+            .volume-wrap {
+                order: 2;
+            }
+            .time-display {
+                min-width: 35px;
+                font-size: 0.75rem;
+            }
+            .play-btn {
+                width: 44px;
+                height: 44px;
+                font-size: 20px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <a href="https://soundcloud.com/denis-invalidov" target="_blank" class="profile-btn">
-                51Invalidov SoundCloud
-            </a>
-            <h1>51music</h1>
-            <p>музыка еееееее</p>
-        </header>
-        <div class="song-list" id="songList"></div>
+        <a href="index.html" class="back-btn">← Назад к списку</a>
+        <div class="song-card" id="songCard"></div>
     </div>
 
     <script>
-        // ✅ ПРАВИЛЬНЫЕ ПУТИ: обложки в covers/, музыка в sounds/
-        const songsData = [
-            { 
-                "id": 1, 
-                "title": "Ж И Р О Б А С", 
-                "genre": "Сингл", 
-                "genreType": "default", 
+        // ВСЕ ПЕСНИ С ПОЛНЫМИ ТЕКСТАМИ
+        const ALL_SONGS = [
+            {
+                "id": 1,
+                "title": "Ж И Р О Б А С",
+                "genre": "Сингл",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "sounds/жиробас (банкомат).mp3",
-                "cover": "covers/1.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+                "cover": "covers/1.png",
+                "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+                "lyrics_cover": "Если хочешь быть жирным\nНеси мне свои бургеры\nВедь мир такой изменчивый\nВедь мир такой обманчивый\nВремя ночи три часа\nМы стоим у бургер кинга\nСчастье точно не в бургерах\nНо с бургерами я богата\nкола бургеры крыля\nЯ любой хавке рада\nВ бургер кинге нет любви\nНо её мне и не надо\nНа моих весах уже сто двадцать килотон\nСобирайся, мо жирок, мы едем в бургер кинг\nНе волнуйся, за такси я скоро заплачу\nЖить как жирный - это сложно, но я научу\nВидишь справа пузыря\nжыробаса ебаного\nУ него три бургера\nИ макдоналс в Казахстане\nИли как тебе вот тот\nИз запоя он вернулся\nОн за нас купит фастфуд\nСтоит только чуть нагнутся\nВремя ночи три часа\nМы стоим у бургер кинга\nСчастье точно не в бургерах\nНо с бургерами я богата\nкола бургеры крылья\nЯ любой хавке рада\nВ маке точно нет любви\nНо её мне и не надо\n\nпауза\n\nЛетом в бургер кинг отвезёт тебя пузырь\nА зимой тебя согреет жир пузыря\nМожет крылья ты себе не купишь ну и что\nБыть голодной лучше в бургеркинге, чем в дома\nВсё считай как жирный еблан\nБудь жирнее, но не слишком\nМир спасёт не бургер кинг\nМир спасёт мой жирный пузик\nНе смотри так на меня\nЗнаешь ведь не в жире сила\nЯ не продалась маку\nЯ б сама его купила\nЕсли хочешь жрать в маке\nНеси мне свои бургеры\nВедь мир такой изменчивый\nВедь мир такой обманчивый\nВремя ночи три часа\nМы стоим у бургер кинга\nСчастье точно не в бургерах\nНо с бургерами я богата\nкола бургеры нагетсы\nЯ любой хавке рада\nВ бургер кинге нет любви\nНо её мне и не надо\n\nпауза\n\nДля меня основное не кола\nПерестань, не глупи, ты же не хочешь чтобы у тебя был живот без жира?\nУ меня? Без жира?\nКонечно, ведь если пузырь всё своё время тратит на то, чтобы нажраться в маке, то у него просто не хватит сил встать с кровати",
+                "lyrics_original": "Если хочешь быть со мной\nНеси мне свои ваучеры\nВедь мир такой изменчивый\nВедь мир такой обманчивый\nВремя ночи три часа\nМы стоим у банкомата\nСчастье точно не в деньгах\nНо с деньгами я богата\nЕвро доллары рубли\nЯ любой валюте рада\nВ банкомате нет любви\nНо её мне и не надо\nНа моих часах уже одиннадцать ноль-ноль\nСобирайся, милая, мы едем в Метрополь\nНе волнуйся, за такси я скоро заплачу\nЖить красиво - это сложно, но я научу\nВидишь справа мужика\nВ том вельветовом костюме\nУ него три кабака\nИ гостиница в Батуми\nИли как тебе вот тот\nИз Америки вернулся\nОн за нас оплатит счёт\nСтоит только улыбнуться\nВремя ночи три часа\nМы стоим у банкомата\nСчастье точно не в деньгах\nНо с деньгами я богата\nЕвро доллары рубли\nЯ любой валюте рада\nВ банкомате нет любви\nНо её мне и не надо\nЛетом на Майорку отвезёт тебя майор\nА зимой тебя согреет шуба от Диор\nМожет счастье ты себе не купишь ну и что\nБыть несчастной лучше в лимузине, чем пешком\nВсё считай как ЭВМ\nБудь умнее, но не слишком\nМир спасёт не красота\nМир спасёт моя сберкнижа\nНе смотри так на меня\nЗнаешь ведь не в правде сила\nЯ не продалась Кремлю\nЯ б сама его купила\nЕсли хочешь быть со мной\nНеси мне свои ваучеры\nВедь мир такой изменчивый\nВедь мир такой обманчивый\nВремя ночи три часа\nМы стоим у банкомата\nСчастье точно не в деньгах\nНо с деньгами я богата\nЕвро доллары рубли\nЯ любой валюте рада\nВ банкомате нет любви\nНо её мне и не надо"
             },
-            { 
-                "id": 2, 
-                "title": "ЖИРНЫЙ ПИДОР", 
-                "genre": "Сниппет / Сингл", 
-                "genreType": "default", 
+            {
+                "id": 2,
+                "title": "Ж И Р Н Ы Й  П И Д О Р",
+                "genre": "Сниппет / Сингл",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "sounds/жирный пидор.MP3",
-                "cover": "covers/2.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+                "cover": "covers/2.png",
+                "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+                "lyrics_cover": "Он был похож в детстве на долбаеба\nвсегда со жрачкой и носит наличку\nон купил бургер мне на том фуд-корде \nон был туповат и еще очень жирный\n\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\n\nЖирный пидор\nЖирный пидор\nЖирный пидор\nЖирный пидор\n\nОн очень жирный,тупейший мудила,\nЕго увлечение - жрать в бургер кинге\nФудкортный король, планы на выходные:\nНабить пузо тем, на что хватит налички\nМама, я так его возненавидел, когда он на весах набрал 230,\nтогда он сказал, если денег не будет, мне мама подкинет баблишек на бургер\n\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\n\nЖирный пидор\nЖирный пидор\nЖирный пидор\nЖирный пидор",
+                "lyrics_original": "Он был похож в детстве на Джеймса Бонда\nВсегда на спорте и носит заточку\nОн купил пиво мне за третьей школой\nОн был туповат, но зато очень добрый\nЮра-Юра, зачем ты в меня кончил?\nДа, я такая дура, позволила тебе засунуть внутрь\nЮра-Юра, зачем ты в меня кончил?\nДа, я такая дура, позволила тебе засунуть внутрь\nХитрый Юра\nХитрый Юра\nХитрый Юра\nХитрый Юра\nОн очень сильный и смелый мужчина\nЕго увлечение — бить людям лица\nФутбольный фанат, планы на выходные\nЛомать кости тех, кого он ненавидит\nО, мама, я так сильно в него влюбилась\nКогда он на турнике вышел на 30!\nТогда он сказал, если кто-то обидит\nОни будут копать друг другу могилы\nЮра-Юра, зачем ты в меня кончил?\nДа, я такая дура, позволила тебе засунуть внутрь\nЮра-Юра, зачем ты в меня кончил?\nДа, я такая дура, позволила тебе засунуть внутрь\nХитрый Юра\nХитрый Юра\nХитрый Юра\nХитрый Юра"
             },
-            { 
-                "id": 3, 
-                "title": "ПУЗЫРИЩЕ", 
-                "genre": "Сниппет / Сингл", 
-                "genreType": "default", 
+            {
+                "id": 3,
+                "title": "П У З Ы Р И Щ Е",
+                "genre": "Сниппет / Сингл",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "sounds/пузырище.MP3",
-                "cover": "covers/3.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+                "cover": "covers/3.png",
+                "soundcloud": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+                "lyrics_cover": "Мне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\n\nЖир\nНа улице снова пузырь\nОн опять уходит в мак\nМак\nЕго лучшая подруга мак\nего жопан насрал под дверь\n\nЖирный бигмак пак\nВ парке жирный пузырь\nСтук жирочка по полу\nПузырь уйдёт под землю в миг\nПод удары животами\nКто-то снова ест биг хит\nБыл жирным бы Денис \nСнял бы охуенный фильм\n\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйта\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке,\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\nВспоминаешь вкус кончи\nНо мамашу потерял\nЖир заплыл в твои складки\nЯ Разскреб бы жир-завал\nТы был в поисках жратвы\nНо наличку проебал\nПомнят все твои отцы\nС кем играл ты в стендоф 2\nПервый батя съел помои\nА второй только детей\n\nБольше мяса, жира, колы\nБро, пиздец ты и пузырь\nжри бигхит\nведь мы не против,\nнабери побольше тонн,\nРасскажи этим ублюдкам\nЧто же ты такое жрешь\n\n\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\n\nМне нравится\nТо как обжираешся\nбольшим комбо в бургер кинге наедаешься\n\nпузырище\nЖирная пузырище\nЯ знаю твой огромный вес\nи мне не нравится\n\nМне нравится\nТо как ты хуяришься\nС пузырями за бигхит,\nим обжираешься\n\nпузырище\nЖирное пузырище\nЯ вижу твой подкожный жир\nЧто мне не нравится",
+                "lyrics_original": "Мне нравится\nТо как ты пытаешься\nИзгонять меня\nЕще раз\nНу пожалуйста\nКрасавица\nМёртвая красавица\nЯ знаю все твои\nСекреты\nИ мне нравится\nДождь\nНа улице снова дождь\nОн опять уходит в тень\nНочь\nЕго лучшая подруга ночь\nГолоса открыли дверь\nЧёрный чемодан\nВ парке мрачный дикий крик\nСтук разбитого стакана\nЗвук утонет в тот же миг\nПод удары барабана\nКто-то снова ловит тильт\nБыл живым бы Балабанов\nСнял бы охуенный фильм\nМне нравится\nТо как ты пытаешься\nИзгонять меня\nЕще раз\nНу пожалуйста\nКрасавица\nМёртвая красавица\nЯ знаю все твои\nСекреты\nИ мне нравится\nМне нравится\nТо как ты пытаешься\nИзгонять меня\nЕще раз\nНу пожалуйста\nКрасавица\nМёртвая красавица\nЯ знаю все твои\nСекреты\nИ мне нравится\nВспоминай её черты\nИ спустись за ней в подвал\nДождь размыл её следы\nМожет выпить барбовал?\nТы был в поисках мечты\nНо себя ты потерял\nПомнят все твои ножи\nКем ты был\nИ кем ты стал\nПервый нож увидел правду\nА последний только ложь\nБольше мяса, крови, плоти\nБро, пиздец ты и даёшь\nРежь свиней\nВедь мы не против\nНо бери побольше нож\nПокажи этим ублюдкам\nКак ты крут и как ты бьешь\nМне нравится\nТо как ты пытаешься\nИзгонять меня\nЕще раз\nНу пожалуйста\nКрасавица\nМёртвая красавица\nЯ знаю все твои\nСекреты\nИ мне нравится\nМне нравится\nТо как ты пытаешься\nИзгонять меня\nЕще раз\nНу пожалуйста\nКрасавица\nМёртвая красавица\nЯ знаю все твои\nСекреты\nИ мне нравится\nМне нравится\nТо как ты пытаешься\nИзгонять меня\nЕще раз\nНу пожалуйста\nКрасавица\nМёртвая красавица\nЯ знаю все твои\nСекреты\nИ мне нравится\nМне нравится\nТо как ты пытаешься\nИзгонять меня\nЕще раз\nНу пожалуйста\nКрасавица\nМёртвая красавица\nЯ знаю все твои\nСекреты\nИ мне нравится"
             },
-            { 
-                "id": 4, 
-                "title": "Я СОВСЕМ ПУЗЫРЬ", 
-                "genre": "Сниппет / Сингл", 
-                "genreType": "default", 
+            {
+                "id": 4,
+                "title": "Я С О В С Е М П У З Ы Р Ь",
+                "genre": "Сниппет / Сингл",
+                "isDemo": false,
+                "isExclusive": false,
                 "file": "sounds/я совсем пузырь.mp3",
-                "cover": "covers/4.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+                "cover": "covers/4.png",
+                "soundcloud": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
+                "lyrics_cover": "Следим за весом плохо\nИ мы знаем это\nЯ съедаю бургер\nобжираюсь знатно\nНо я голоден, бигхита не хватает вовсе \nЯ проебываю деньги, выпиваю колу всю\nНо, выпив досуха ее,я ощущаю жажду\nберу картошку фри, после съедаю сразу\nНо в них калорий не нашёл\nЗабираю комбо\nПревращаю в порошок\nПоглощаю разом\n\nИ вдруг я понимаю\nЧто жратвы не осталось\nА эти жажда и голод\nНавсегда со мной\nИ я каждый день снова\nПо бигхиту съедаю\nДиета не помогает\nЯ совсем пузырь\n\nВокруг бургеркинг\nПолный разных бигмаков\nВсевозможных комбо\nИ вкуснейших крыльев\nОтражающих складки,\nПроникающих в недра\nподкожного жира\nИ сгорающих в нём\n\nИ ТУТ Я ПОНИМАЮ\nЧТО БАБЛА НЕ ОСТАЛОСЬ\nА ЭТА ТЯГА К ФАСТФУДУ\nНАВСЕГДА СО МНОЙ\nИ Я КАЖДЫЙ ДЕНЬ СНОВА\nВ НИЩЕТЕ ПОМИРАЮ\nМАМКА УЖЕ НЕ ПОМОЖЕТ \nЯ СОВСЕМ НИЩИЙ\n\nВОКРУГ ЦЕЛЫЙ МАК\nПОЛНЫЙ ВКУСНЫХ БИГХИТОВ\nВСЕВОЗМОЖНЫХ ПРЕМЬЕРОВ\nНО ИХ БОЛЬШОЙ ЦЕННИК\nОТРАЖАЮЩИХ БЕДНОСТЬ,\nПРОНИКАЮЩИЙ В НЕДРА ПУСТОГО КОШЕЛЬКА\nИ РАСТВОРЯЮЩИХ ЖИР\n\nздесь нету текста мы аутист",
+                "lyrics_original": "Мы танцуем плохо,\nИ мы знаем это.\nЯ целую лоб твой,\nОбнимаю крепко.\nНо я голоден, объятий не хватает вовсе,\nЯ вскрываю твои вены, выпиваю кровь всю.\nНо, выпив досуха тебя, я ощущаю жажду.\nРежу тебя на куски, после съедаю каждый,\nНо в них тебя я не нашёл.\nРасщепляю кости,\nПревращаю в порошок,\nЗапускаю в ноздри.\n\nИ вдруг я понимаю,\nЧто тебя не осталось,\nА эти жажда и голод\nНавсегда со мной.\nИ я каждый день снова\nО тебе вспоминаю,\nНо тебя не существует,\nЯ совсем один.\nВокруг целый мир,\nПолный галлюцинаций,\nВсевозможных зверей,\nИх прекрасных красных глаз,\nОтражающих небо;\nПроникающих в недра\nРаскалённого солнца,\nИ сгорающих в нём."
             },
-            { 
-                "id": 5, 
-                "title": "Я ЖИРНЫЙ", 
-                "genre": "Эксклюзив", 
-                "genreType": "exclusive", 
+            {
+                "id": 5,
+                "title": "Я ЖИРНЫЙ",
+                "genre": "Эксклюзив",
+                "isDemo": true,
+                "isExclusive": true,
                 "file": "sounds/я жирный.mp3",
-                "cover": "covers/play.png", 
-                "sc_link": "" 
+                "cover": "covers/play.png",
+                "soundcloud": "",
+                "lyrics_cover": null,
+                "lyrics_original": null
             }
         ];
 
-        function renderList() {
-            const container = document.getElementById('songList');
-            container.innerHTML = '';
-            songsData.forEach(song => {
-                const item = document.createElement('a');
-                item.href = `songs.html?id=${song.id}`;
-                item.className = 'song-item';
-                
-                if (song.genreType === 'exclusive') {
-                    item.classList.add('exclusive');
-                }
-                
-                const genreClass = song.genreType === 'exclusive' ? 'exclusive' : 'default';
-                
-                let demoBadge = '';
-                if (song.genreType === 'exclusive') {
-                    demoBadge = `<span class="demo-badge">★ Демо</span>`;
-                }
-                
-                let scBadgeClass = 'sc-badge';
-                let scBadgeText = '▶ Слушать на SC';
-                if (song.genreType === 'exclusive' || !song.sc_link) {
-                    scBadgeClass += ' hidden';
-                    scBadgeText = '▶ Эксклюзив';
-                }
-                
-                item.innerHTML = `
-                    <img src="${song.cover}" alt="${song.title}" class="song-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23333%22/%3E%3Ctext x=%2220%22 y=%2245%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%23fff%22%3E51%3C/text%3E%3C/svg%3E'">
-                    <div class="song-info">
-                        <div class="song-genre ${genreClass}">${song.genre}</div>
-                        <div class="song-title">${song.title} ${demoBadge}</div>
-                    </div>
-                    <div class="${scBadgeClass}">${scBadgeText}</div>
-                `;
-                container.appendChild(item);
-            });
+        function formatTime(seconds) {
+            if (!seconds || isNaN(seconds)) return '0:00';
+            const m = Math.floor(seconds / 60);
+            const s = Math.floor(seconds % 60);
+            return `${m}:${s.toString().padStart(2, '0')}`;
         }
-        renderList();
+
+        const params = new URLSearchParams(window.location.search);
+        const id = parseInt(params.get('id'));
+        const song = ALL_SONGS.find(s => s.id === id);
+
+        if (song) {
+            let genreTags = '';
+            if (song.genre) {
+                const genres = song.genre.split('/').map(g => g.trim());
+                genres.forEach(g => {
+                    genreTags += `<span class="genre-tag">${g}</span>`;
+                });
+            }
+            if (song.isExclusive) {
+                genreTags += `<span class="genre-tag exclusive">★ Эксклюзив</span>`;
+            }
+            if (song.isDemo) {
+                genreTags += `<span class="genre-tag demo">◈ Демо</span>`;
+            }
+
+            let lyricsHtml = '';
+            if (song.lyrics_cover === null && song.lyrics_original === null) {
+                lyricsHtml = `
+                    <div class="no-lyrics">
+                        <span class="icon">🎵</span>
+                        <h3>Текст отсутствует</h3>
+                        <p>Демо-версия трека</p>
+                    </div>
+                `;
+            } else {
+                const coverText = song.lyrics_cover || 'Текст отсутствует';
+                const originalText = song.lyrics_original || 'Текст отсутствует';
+                lyricsHtml = `
+                    <div class="lyrics-grid">
+                        <div class="lyrics-block">
+                            <h3><span class="icon">🎤</span> Переделанный текст</h3>
+                            <div class="lyrics-text">${coverText}</div>
+                        </div>
+                        <div class="lyrics-block original">
+                            <h3><span class="icon">📝</span> Оригинальный текст</h3>
+                            <div class="lyrics-text">${originalText}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            let actionButtons = '';
+            if (song.isExclusive) {
+                actionButtons += `<span class="action-btn exclusive">⭐ Эксклюзивный релиз</span>`;
+            }
+            if (song.isDemo) {
+                actionButtons += `<span class="action-btn demo">🎵 Демо-версия</span>`;
+            }
+            if (!song.isExclusive && song.soundcloud) {
+                actionButtons += `<a href="${song.soundcloud}" target="_blank" class="action-btn soundcloud">🎧 Слушать на SoundCloud</a>`;
+            }
+
+            let coverImg = song.cover;
+            if (!coverImg || coverImg === 'covers/play.png') {
+                coverImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23221f33"/%3E%3Ccircle cx="200" cy="200" r="80" fill="%23ff5500" opacity="0.3"/%3E%3Ctext x="200" y="215" font-family="sans-serif" font-size="40" fill="%23fff" text-anchor="middle"%3E51%3C/text%3E%3C/svg%3E';
+            }
+
+            document.getElementById('songCard').innerHTML = `
+                <div class="top-row">
+                    <div class="cover-wrapper">
+                        <img src="${coverImg}" alt="${song.title}" class="cover-img">
+                    </div>
+                    <div class="track-info">
+                        <div class="genre-container">${genreTags}</div>
+                        <h1 class="track-title">${song.title}</h1>
+
+                        <div class="player-wrapper">
+                            <div class="custom-player">
+                                <button class="play-btn" id="playBtn">▶</button>
+                                <span class="time-display" id="currentTime">0:00</span>
+                                <div class="progress-wrap">
+                                    <div class="progress-track" id="progressTrack">
+                                        <div class="progress-fill" id="progressFill"></div>
+                                    </div>
+                                </div>
+                                <span class="time-display" id="totalTime">0:00</span>
+                                <div class="volume-wrap">
+                                    <span class="volume-icon" id="volumeIcon">🔊</span>
+                                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1">
+                                </div>
+                            </div>
+                            <div id="errorMessage" class="error-message" style="display:none;"></div>
+                        </div>
+
+                        <div class="action-buttons">
+                            ${actionButtons}
+                        </div>
+                    </div>
+                </div>
+                <div class="lyrics-section">
+                    ${lyricsHtml}
+                </div>
+            `;
+
+            // ПЛЕЕР ЛОГИКА
+            const audio = new Audio();
+            audio.src = song.file;
+            audio.preload = 'metadata';
+
+            const playBtn = document.getElementById('playBtn');
+            const currentTimeEl = document.getElementById('currentTime');
+            const totalTimeEl = document.getElementById('totalTime');
+            const progressFill = document.getElementById('progressFill');
+            const progressTrack = document.getElementById('progressTrack');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const volumeIcon = document.getElementById('volumeIcon');
+            const errorMessage = document.getElementById('errorMessage');
+
+            let isDragging = false;
+
+            audio.addEventListener('error', function(e) {
+                console.error('Ошибка загрузки аудио:', e);
+                errorMessage.style.display = 'block';
+                errorMessage.textContent = `❌ Не удалось загрузить аудиофайл. Проверьте наличие файла: ${song.file}`;
+                playBtn.style.opacity = '0.5';
+                playBtn.disabled = true;
+            });
+
+            audio.addEventListener('loadedmetadata', () => {
+                if (audio.duration && !isNaN(audio.duration)) {
+                    totalTimeEl.textContent = formatTime(audio.duration);
+                }
+                errorMessage.style.display = 'none';
+                playBtn.disabled = false;
+                playBtn.style.opacity = '1';
+            });
+
+            audio.addEventListener('timeupdate', () => {
+                if (!isDragging && audio.duration && !isNaN(audio.duration)) {
+                    const percent = (audio.currentTime / audio.duration) * 100;
+                    progressFill.style.width = percent + '%';
+                    currentTimeEl.textContent = formatTime(audio.currentTime);
+                }
+            });
+
+            progressTrack.addEventListener('click', (e) => {
+                if (!audio.duration || isNaN(audio.duration)) return;
+                const rect = progressTrack.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percent = Math.min(1, Math.max(0, x / rect.width));
+                audio.currentTime = percent * audio.duration;
+                progressFill.style.width = percent * 100 + '%';
+                currentTimeEl.textContent = formatTime(audio.currentTime);
+            });
+
+            progressTrack.addEventListener('mousedown', (e) => {
+                if (!audio.duration || isNaN(audio.duration)) return;
+                isDragging = true;
+                const rect = progressTrack.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percent = Math.min(1, Math.max(0, x / rect.width));
+                audio.currentTime = percent * audio.duration;
+                progressFill.style.width = percent * 100 + '%';
+                currentTimeEl.textContent = formatTime(audio.currentTime);
+
+                const onMouseMove = (ev) => {
+                    const r = progressTrack.getBoundingClientRect();
+                    const _x = ev.clientX - r.left;
+                    const _percent = Math.min(1, Math.max(0, _x / r.width));
+                    audio.currentTime = _percent * audio.duration;
+                    progressFill.style.width = _percent * 100 + '%';
+                    currentTimeEl.textContent = formatTime(audio.currentTime);
+                };
+                const onMouseUp = () => {
+                    isDragging = false;
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                };
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+            });
+
+            playBtn.addEventListener('click', () => {
+                if (playBtn.disabled) return;
+                if (audio.paused) {
+                    audio.play().catch((err) => {
+                        console.error('Ошибка воспроизведения:', err);
+                        errorMessage.style.display = 'block';
+                        errorMessage.textContent = '❌ Не удалось воспроизвести аудио. Попробуйте позже.';
+                    });
+                    playBtn.textContent = '⏸';
+                } else {
+                    audio.pause();
+                    playBtn.textContent = '▶';
+                }
+            });
+
+            audio.addEventListener('ended', () => {
+                playBtn.textContent = '▶';
+                progressFill.style.width = '0%';
+                currentTimeEl.textContent = '0:00';
+            });
+
+            volumeSlider.addEventListener('input', () => {
+                audio.volume = parseFloat(volumeSlider.value);
+                updateVolumeIcon(audio.volume);
+            });
+
+            function updateVolumeIcon(vol) {
+                if (vol === 0) volumeIcon.textContent = '🔇';
+                else if (vol < 0.5) volumeIcon.textContent = '🔉';
+                else volumeIcon.textContent = '🔊';
+            }
+
+            let prevVolume = 1;
+            volumeIcon.addEventListener('click', () => {
+                if (audio.volume > 0) {
+                    prevVolume = audio.volume;
+                    audio.volume = 0;
+                    volumeSlider.value = 0;
+                    volumeIcon.textContent = '🔇';
+                } else {
+                    audio.volume = prevVolume || 0.5;
+                    volumeSlider.value = audio.volume;
+                    updateVolumeIcon(audio.volume);
+                }
+            });
+
+            document.addEventListener('play', (e) => {
+                if (e.target === audio) playBtn.textContent = '⏸';
+            });
+            document.addEventListener('pause', (e) => {
+                if (e.target === audio) playBtn.textContent = '▶';
+            });
+
+        } else {
+            document.getElementById('songCard').innerHTML = `
+                <div style="text-align:center; padding:60px 20px;">
+                    <h2 style="color:#ff5500; font-size:2rem;">❌ Песня не найдена</h2>
+                    <p style="color:#8b85a7; margin-top:10px;">Вернитесь на главную и выберите другой трек</p>
+                    <a href="index.html" style="display:inline-block; margin-top:20px; color:#ff5500; text-decoration:none; border:1px solid rgba(255,85,0,0.3); padding:10px 30px; border-radius:30px;">← На главную</a>
+                </div>
+            `;
+        }
     </script>
 </body>
 </html>
