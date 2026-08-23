@@ -152,6 +152,10 @@
         .play-btn:active {
             transform: scale(0.94);
         }
+        .play-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
 
         .time-display {
             font-size: 0.85rem;
@@ -182,6 +186,10 @@
         }
         .progress-track:hover {
             height: 7px;
+        }
+        .progress-track.disabled {
+            cursor: not-allowed;
+            opacity: 0.3;
         }
 
         .progress-fill {
@@ -386,6 +394,19 @@
             margin-top: 8px;
         }
 
+        .error-message {
+            color: #ff6b6b;
+            padding: 10px;
+            background: rgba(255, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid rgba(255, 0, 0, 0.2);
+            margin-top: 10px;
+        }
+        .error-message.hidden {
+            display: none;
+        }
+
         @media (max-width: 800px) {
             .top-row {
                 grid-template-columns: 1fr;
@@ -452,7 +473,7 @@
     </div>
 
     <script>
-        // ⚠️ ПЕСНИ В КОРНЕВОЙ ПАПКЕ, ОБЛОЖКИ В covers/
+        // ВСЕ ПЕСНИ С ПОЛНЫМИ ТЕКСТАМИ
         const ALL_SONGS = [
             {
                 "id": 1,
@@ -460,7 +481,7 @@
                 "genre": "Сингл",
                 "isDemo": false,
                 "isExclusive": false,
-                "file": "жиробас (банкомат).mp3",
+                "file": "sounds/жиробас (банкомат).mp3",
                 "cover": "covers/1.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
                 "lyrics_cover": "Если хочешь быть жирным\nНеси мне свои бургеры\nВедь мир такой изменчивый\nВедь мир такой обманчивый\nВремя ночи три часа\nМы стоим у бургер кинга\nСчастье точно не в бургерах\nНо с бургерами я богата\nкола бургеры крыля\nЯ любой хавке рада\nВ бургер кинге нет любви\nНо её мне и не надо\nНа моих весах уже сто двадцать килотон\nСобирайся, мо жирок, мы едем в бургер кинг\nНе волнуйся, за такси я скоро заплачу\nЖить как жирный - это сложно, но я научу\nВидишь справа пузыря\nжыробаса ебаного\nУ него три бургера\nИ макдоналс в Казахстане\nИли как тебе вот тот\nИз запоя он вернулся\nОн за нас купит фастфуд\nСтоит только чуть нагнутся\nВремя ночи три часа\nМы стоим у бургер кинга\nСчастье точно не в бургерах\nНо с бургерами я богата\nкола бургеры крылья\nЯ любой хавке рада\nВ маке точно нет любви\nНо её мне и не надо\n\nпауза\n\nЛетом в бургер кинг отвезёт тебя пузырь\nА зимой тебя согреет жир пузыря\nМожет крылья ты себе не купишь ну и что\nБыть голодной лучше в бургеркинге, чем в дома\nВсё считай как жирный еблан\nБудь жирнее, но не слишком\nМир спасёт не бургер кинг\nМир спасёт мой жирный пузик\nНе смотри так на меня\nЗнаешь ведь не в жире сила\nЯ не продалась маку\nЯ б сама его купила\nЕсли хочешь жрать в маке\nНеси мне свои бургеры\nВедь мир такой изменчивый\nВедь мир такой обманчивый\nВремя ночи три часа\nМы стоим у бургер кинга\nСчастье точно не в бургерах\nНо с бургерами я богата\nкола бургеры нагетсы\nЯ любой хавке рада\nВ бургер кинге нет любви\nНо её мне и не надо\n\nпауза\n\nДля меня основное не кола\nПерестань, не глупи, ты же не хочешь чтобы у тебя был живот без жира?\nУ меня? Без жира?\nКонечно, ведь если пузырь всё своё время тратит на то, чтобы нажраться в маке, то у него просто не хватит сил встать с кровати",
@@ -472,7 +493,7 @@
                 "genre": "Сниппет / Сингл",
                 "isDemo": false,
                 "isExclusive": false,
-                "file": "жирный пидор.MP3",
+                "file": "sounds/жирный пидор.MP3",
                 "cover": "covers/2.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
                 "lyrics_cover": "Он был похож в детстве на долбаеба\nвсегда со жрачкой и носит наличку\nон купил бургер мне на том фуд-корде \nон был туповат и еще очень жирный\n\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\n\nЖирный пидор\nЖирный пидор\nЖирный пидор\nЖирный пидор\n\nОн очень жирный,тупейший мудила,\nЕго увлечение - жрать в бургер кинге\nФудкортный король, планы на выходные:\nНабить пузо тем, на что хватит налички\nМама, я так его возненавидел, когда он на весах набрал 230,\nтогда он сказал, если денег не будет, мне мама подкинет баблишек на бургер\n\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\nЖирный-Жирный, зачем диету бросил?\nДа, мать такая дура, позволила тебе разжиреть в маке\n\nЖирный пидор\nЖирный пидор\nЖирный пидор\nЖирный пидор",
@@ -484,7 +505,7 @@
                 "genre": "Сниппет / Сингл",
                 "isDemo": false,
                 "isExclusive": false,
-                "file": "пузырище.MP3",
+                "file": "sounds/пузырище.MP3",
                 "cover": "covers/3.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
                 "lyrics_cover": "Мне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\n\nЖир\nНа улице снова пузырь\nОн опять уходит в мак\nМак\nЕго лучшая подруга мак\nего жопан насрал под дверь\n\nЖирный бигмак пак\nВ парке жирный пузырь\nСтук жирочка по полу\nПузырь уйдёт под землю в миг\nПод удары животами\nКто-то снова ест биг хит\nБыл жирным бы Денис \nСнял бы охуенный фильм\n\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйта\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке,\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\nВспоминаешь вкус кончи\nНо мамашу потерял\nЖир заплыл в твои складки\nЯ Разскреб бы жир-завал\nТы был в поисках жратвы\nНо наличку проебал\nПомнят все твои отцы\nС кем играл ты в стендоф 2\nПервый батя съел помои\nА второй только детей\n\nБольше мяса, жира, колы\nБро, пиздец ты и пузырь\nжри бигхит\nведь мы не против,\nнабери побольше тонн,\nРасскажи этим ублюдкам\nЧто же ты такое жрешь\n\n\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\nМне нравится\nТо как обжираешся\nБургерами с колой\nВ маке\nДа пожалуйста\n\nпузырище\nЖирное пузырище\nЯ знаю твой огромный вес,\nОн мне не нравится\n\n\nМне нравится\nТо как обжираешся\nбольшим комбо в бургер кинге наедаешься\n\nпузырище\nЖирная пузырище\nЯ знаю твой огромный вес\nи мне не нравится\n\nМне нравится\nТо как ты хуяришься\nС пузырями за бигхит,\nим обжираешься\n\nпузырище\nЖирное пузырище\nЯ вижу твой подкожный жир\nЧто мне не нравится",
@@ -496,7 +517,7 @@
                 "genre": "Сниппет / Сингл",
                 "isDemo": false,
                 "isExclusive": false,
-                "file": "я совсем пузырь.mp3",
+                "file": "sounds/я совсем пузырь.mp3",
                 "cover": "covers/4.png",
                 "soundcloud": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
                 "lyrics_cover": "Следим за весом плохо\nИ мы знаем это\nЯ съедаю бургер\nобжираюсь знатно\nНо я голоден, бигхита не хватает вовсе \nЯ проебываю деньги, выпиваю колу всю\nНо, выпив досуха ее,я ощущаю жажду\nберу картошку фри, после съедаю сразу\nНо в них калорий не нашёл\nЗабираю комбо\nПревращаю в порошок\nПоглощаю разом\n\nИ вдруг я понимаю\nЧто жратвы не осталось\nА эти жажда и голод\nНавсегда со мной\nИ я каждый день снова\nПо бигхиту съедаю\nДиета не помогает\nЯ совсем пузырь\n\nВокруг бургеркинг\nПолный разных бигмаков\nВсевозможных комбо\nИ вкуснейших крыльев\nОтражающих складки,\nПроникающих в недра\nподкожного жира\nИ сгорающих в нём\n\nИ ТУТ Я ПОНИМАЮ\nЧТО БАБЛА НЕ ОСТАЛОСЬ\nА ЭТА ТЯГА К ФАСТФУДУ\nНАВСЕГДА СО МНОЙ\nИ Я КАЖДЫЙ ДЕНЬ СНОВА\nВ НИЩЕТЕ ПОМИРАЮ\nМАМКА УЖЕ НЕ ПОМОЖЕТ \nЯ СОВСЕМ НИЩИЙ\n\nВОКРУГ ЦЕЛЫЙ МАК\nПОЛНЫЙ ВКУСНЫХ БИГХИТОВ\nВСЕВОЗМОЖНЫХ ПРЕМЬЕРОВ\nНО ИХ БОЛЬШОЙ ЦЕННИК\nОТРАЖАЮЩИХ БЕДНОСТЬ,\nПРОНИКАЮЩИЙ В НЕДРА ПУСТОГО КОШЕЛЬКА\nИ РАСТВОРЯЮЩИХ ЖИР\n\nздесь нету текста мы аутист",
@@ -505,11 +526,11 @@
             {
                 "id": 5,
                 "title": "Я ЖИРНЫЙ",
-                "genre": "Cниппет / НеСингл",
+                "genre": "Эксклюзив",
                 "isDemo": true,
                 "isExclusive": true,
-                "file": "я жирный.mp3",
-                "cover": "covers/play.png",
+                "file": "sounds/я жирный.mp3",
+                "cover": null,
                 "soundcloud": "",
                 "lyrics_cover": null,
                 "lyrics_original": null
@@ -521,6 +542,13 @@
             const m = Math.floor(seconds / 60);
             const s = Math.floor(seconds % 60);
             return `${m}:${s.toString().padStart(2, '0')}`;
+        }
+
+        // Генерация заглушки для обложки
+        function getDefaultCover(title) {
+            const color = '#ff5500';
+            const bg = '#221f33';
+            return `data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="${encodeURIComponent(bg)}"/%3E%3Ccircle cx="200" cy="200" r="80" fill="${encodeURIComponent(color)}" opacity="0.3"/%3E%3Ctext x="200" y="215" font-family="sans-serif" font-size="40" fill="%23fff" text-anchor="middle"%3E51%3C/text%3E%3Ctext x="200" y="260" font-family="sans-serif" font-size="14" fill="%238b85a7" text-anchor="middle"%3E${encodeURIComponent(title.substring(0, 10))}%3C/text%3E%3C/svg%3E`;
         }
 
         const params = new URLSearchParams(window.location.search);
@@ -552,15 +580,17 @@
                     </div>
                 `;
             } else {
+                const coverText = song.lyrics_cover || 'Текст отсутствует';
+                const originalText = song.lyrics_original || 'Текст отсутствует';
                 lyricsHtml = `
                     <div class="lyrics-grid">
                         <div class="lyrics-block">
                             <h3><span class="icon">🎤</span> Переделанный текст</h3>
-                            <div class="lyrics-text">${song.lyrics_cover}</div>
+                            <div class="lyrics-text">${coverText}</div>
                         </div>
                         <div class="lyrics-block original">
                             <h3><span class="icon">📝</span> Оригинальный текст</h3>
-                            <div class="lyrics-text">${song.lyrics_original}</div>
+                            <div class="lyrics-text">${originalText}</div>
                         </div>
                     </div>
                 `;
@@ -577,15 +607,16 @@
                 actionButtons += `<a href="${song.soundcloud}" target="_blank" class="action-btn soundcloud">🎧 Слушать на SoundCloud</a>`;
             }
 
+            // Обложка с fallback
             let coverImg = song.cover;
-            if (!coverImg || coverImg === 'covers/play.png') {
-                coverImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23221f33"/%3E%3Ccircle cx="200" cy="200" r="80" fill="%23ff5500" opacity="0.3"/%3E%3Ctext x="200" y="215" font-family="sans-serif" font-size="40" fill="%23fff" text-anchor="middle"%3E51%3C/text%3E%3C/svg%3E';
+            if (!coverImg) {
+                coverImg = getDefaultCover(song.title);
             }
 
             document.getElementById('songCard').innerHTML = `
                 <div class="top-row">
                     <div class="cover-wrapper">
-                        <img src="${coverImg}" alt="${song.title}" class="cover-img">
+                        <img src="${coverImg}" alt="${song.title}" class="cover-img" onerror="this.src='${getDefaultCover(song.title)}'">
                     </div>
                     <div class="track-info">
                         <div class="genre-container">${genreTags}</div>
@@ -606,6 +637,7 @@
                                     <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="1">
                                 </div>
                             </div>
+                            <div id="errorMessage" class="error-message hidden"></div>
                         </div>
 
                         <div class="action-buttons">
@@ -619,7 +651,10 @@
             `;
 
             // ПЛЕЕР ЛОГИКА
-            const audio = new Audio(song.file);
+            const audio = new Audio();
+            audio.src = song.file;
+            audio.preload = 'metadata';
+
             const playBtn = document.getElementById('playBtn');
             const currentTimeEl = document.getElementById('currentTime');
             const totalTimeEl = document.getElementById('totalTime');
@@ -627,15 +662,50 @@
             const progressTrack = document.getElementById('progressTrack');
             const volumeSlider = document.getElementById('volumeSlider');
             const volumeIcon = document.getElementById('volumeIcon');
+            const errorMessage = document.getElementById('errorMessage');
 
             let isDragging = false;
+            let isAudioLoaded = false;
+
+            audio.addEventListener('error', function(e) {
+                console.error('Ошибка загрузки аудио:', e);
+                errorMessage.classList.remove('hidden');
+                errorMessage.textContent = `❌ Не удалось загрузить аудиофайл. Проверьте наличие файла: ${song.file}`;
+                playBtn.disabled = true;
+                progressTrack.classList.add('disabled');
+            });
 
             audio.addEventListener('loadedmetadata', () => {
-                totalTimeEl.textContent = formatTime(audio.duration);
+                if (audio.duration && !isNaN(audio.duration) && audio.duration > 0) {
+                    totalTimeEl.textContent = formatTime(audio.duration);
+                    isAudioLoaded = true;
+                    errorMessage.classList.add('hidden');
+                    playBtn.disabled = false;
+                    progressTrack.classList.remove('disabled');
+                } else {
+                    // Если длительность не определена, возможно файл битый
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.textContent = `⚠️ Аудиофайл загружен, но не удалось определить длительность. Файл: ${song.file}`;
+                    playBtn.disabled = true;
+                }
+            });
+
+            // Если файл не загружается, показываем ошибку через таймаут
+            const loadTimeout = setTimeout(() => {
+                if (!isAudioLoaded && !audio.duration) {
+                    errorMessage.classList.remove('hidden');
+                    errorMessage.textContent = `⚠️ Аудиофайл не загружается. Проверьте наличие файла: ${song.file}`;
+                    playBtn.disabled = true;
+                    progressTrack.classList.add('disabled');
+                }
+            }, 5000);
+
+            audio.addEventListener('canplay', () => {
+                clearTimeout(loadTimeout);
             });
 
             audio.addEventListener('timeupdate', () => {
-                if (!isDragging) {
+                if (!isDragging && audio.duration && !isNaN(audio.duration) && audio.duration > 0) {
                     const percent = (audio.currentTime / audio.duration) * 100;
                     progressFill.style.width = percent + '%';
                     currentTimeEl.textContent = formatTime(audio.currentTime);
@@ -643,14 +713,17 @@
             });
 
             progressTrack.addEventListener('click', (e) => {
+                if (!audio.duration || isNaN(audio.duration) || audio.duration === 0 || playBtn.disabled) return;
                 const rect = progressTrack.getBoundingClientRect();
                 const x = e.clientX - rect.left;
-                const percent = x / rect.width;
+                const percent = Math.min(1, Math.max(0, x / rect.width));
                 audio.currentTime = percent * audio.duration;
                 progressFill.style.width = percent * 100 + '%';
+                currentTimeEl.textContent = formatTime(audio.currentTime);
             });
 
             progressTrack.addEventListener('mousedown', (e) => {
+                if (!audio.duration || isNaN(audio.duration) || audio.duration === 0 || playBtn.disabled) return;
                 isDragging = true;
                 const rect = progressTrack.getBoundingClientRect();
                 const x = e.clientX - rect.left;
@@ -677,8 +750,13 @@
             });
 
             playBtn.addEventListener('click', () => {
+                if (playBtn.disabled) return;
                 if (audio.paused) {
-                    audio.play().catch(() => {});
+                    audio.play().catch((err) => {
+                        console.error('Ошибка воспроизведения:', err);
+                        errorMessage.classList.remove('hidden');
+                        errorMessage.textContent = '❌ Не удалось воспроизвести аудио. Попробуйте позже.';
+                    });
                     playBtn.textContent = '⏸';
                 } else {
                     audio.pause();
