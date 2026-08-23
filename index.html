@@ -24,7 +24,6 @@
         }
         header p { color: #8b85a7; font-size: 1.1rem; }
 
-        /* Кнопка профиля SoundCloud (справа сверху) */
         .profile-btn {
             position: absolute;
             top: -40px;
@@ -126,7 +125,6 @@
 <body>
     <div class="container">
         <header>
-            <!-- Кнопка профиля -->
             <a href="https://soundcloud.com/denis-invalidov" target="_blank" class="profile-btn">
                 51Invalidov SoundCloud
             </a>
@@ -137,37 +135,74 @@
     </div>
 
     <script>
-        // Данные вшиты прямо в код
+        // ✅ ПРАВИЛЬНЫЕ ПУТИ: обложки в covers/, музыка в sounds/
         const songsData = [
-            { "id": 1, "title": "Ж И Р О Б А С", "genre": "Сингл", "genreType": "default", "file": "жиробас (банкомат).mp3", "cover": "covers/1.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
-            { "id": 2, "title": "ЖИРНЫЙ ПИДОР", "genre": "Сниппет / Сингл", "genreType": "default", "file": "жирный пидор.MP3", "cover": "covers/2.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
-            { "id": 3, "title": "ПУЗЫРИЩЕ", "genre": "Сниппет / Сингл", "genreType": "default", "file": "пузырище.MP3", "cover": "covers/3.png", "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
-            { "id": 4, "title": "Я СОВСЕМ ПУЗЫРЬ", "genre": "Сниппет / Сингл", "genreType": "default", "file": "я совсем пузырь.mp3", "cover": "covers/4.png", "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
-            { "id": 5, "title": "Я ЖИРНЫЙ", "genre": "Эксклюзив", "genreType": "exclusive", "file": "Я ЖИРНЫЙ.mp3", "cover": "covers/play.png", "sc_link": "" }
+            { 
+                "id": 1, 
+                "title": "Ж И Р О Б А С", 
+                "genre": "Сингл", 
+                "genreType": "default", 
+                "file": "sounds/жиробас (банкомат).mp3",
+                "cover": "covers/1.png", 
+                "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+            },
+            { 
+                "id": 2, 
+                "title": "ЖИРНЫЙ ПИДОР", 
+                "genre": "Сниппет / Сингл", 
+                "genreType": "default", 
+                "file": "sounds/жирный пидор.MP3",
+                "cover": "covers/2.png", 
+                "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+            },
+            { 
+                "id": 3, 
+                "title": "ПУЗЫРИЩЕ", 
+                "genre": "Сниппет / Сингл", 
+                "genreType": "default", 
+                "file": "sounds/пузырище.MP3",
+                "cover": "covers/3.png", 
+                "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+            },
+            { 
+                "id": 4, 
+                "title": "Я СОВСЕМ ПУЗЫРЬ", 
+                "genre": "Сниппет / Сингл", 
+                "genreType": "default", 
+                "file": "sounds/я совсем пузырь.mp3",
+                "cover": "covers/4.png", 
+                "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+            },
+            { 
+                "id": 5, 
+                "title": "Я ЖИРНЫЙ", 
+                "genre": "Эксклюзив", 
+                "genreType": "exclusive", 
+                "file": "sounds/я жирный.mp3",
+                "cover": "covers/play.png", 
+                "sc_link": "" 
+            }
         ];
 
         function renderList() {
             const container = document.getElementById('songList');
+            container.innerHTML = '';
             songsData.forEach(song => {
                 const item = document.createElement('a');
                 item.href = `songs.html?id=${song.id}`;
                 item.className = 'song-item';
                 
-                // Для эксклюзива добавляем класс
                 if (song.genreType === 'exclusive') {
                     item.classList.add('exclusive');
                 }
                 
-                // Жанр с классом для стиля
                 const genreClass = song.genreType === 'exclusive' ? 'exclusive' : 'default';
                 
-                // Бейджик для эксклюзива
                 let demoBadge = '';
                 if (song.genreType === 'exclusive') {
                     demoBadge = `<span class="demo-badge">★ Демо</span>`;
                 }
                 
-                // Бейджик SoundCloud (скрываем для эксклюзива)
                 let scBadgeClass = 'sc-badge';
                 let scBadgeText = '▶ Слушать на SC';
                 if (song.genreType === 'exclusive' || !song.sc_link) {
