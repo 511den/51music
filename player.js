@@ -296,21 +296,6 @@
         return state.currentSong !== null;
     };
 
-    // Восстанавливаем состояние при загрузке страницы
-    window.addEventListener('load', () => {
-        // Проверяем, есть ли активный трек в localStorage
-        try {
-            const saved = localStorage.getItem('globalPlayerState');
-            if (saved) {
-                const data = JSON.parse(saved);
-                if (data.song && data.isPlaying) {
-                    // Восстанавливаем только если был активен
-                    // Но аудио создаём заново
-                }
-            }
-        } catch(e) {}
-    });
-
     // Сохраняем состояние при изменениях
     setInterval(() => {
         if (state.currentSong && state.audio) {
@@ -318,8 +303,8 @@
                 localStorage.setItem('globalPlayerState', JSON.stringify({
                     song: state.currentSong,
                     isPlaying: state.isPlaying,
-                    currentTime: state.audio.currentTime,
-                    volume: state.audio.volume
+                    currentTime: state.audio.currentTime || 0,
+                    volume: state.audio.volume || 1
                 }));
             } catch(e) {}
         }
