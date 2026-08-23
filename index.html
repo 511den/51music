@@ -61,13 +61,33 @@
             transform: translateX(5px);
             border-color: #ff5500;
         }
+        .song-item.exclusive {
+            border-color: rgba(180, 124, 255, 0.3);
+        }
+        .song-item.exclusive:hover {
+            border-color: #b47cff;
+            box-shadow: 0 0 20px rgba(180, 124, 255, 0.1);
+        }
         .song-cover {
             width: 80px; height: 80px; border-radius: 12px;
             object-fit: cover; background: #222;
         }
         .song-info { flex: 1; }
         .song-title { font-size: 1.4rem; font-weight: 700; }
-        .song-genre { font-size: 0.8rem; color: #ff5500; text-transform: uppercase; letter-spacing: 1px; }
+        .song-genre { 
+            font-size: 0.8rem; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        .song-genre.default { color: #ff5500; }
+        .song-genre.exclusive { 
+            color: #b47cff;
+            background: rgba(180, 124, 255, 0.15);
+            padding: 2px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            border: 1px solid rgba(180, 124, 255, 0.2);
+        }
         
         .sc-badge {
             font-size: 0.7rem;
@@ -77,10 +97,29 @@
             color: #a49ebd;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
+        .sc-badge.hidden {
+            opacity: 0.3;
+            cursor: default;
+        }
+
+        .demo-badge {
+            font-size: 0.6rem;
+            background: linear-gradient(135deg, #b47cff, #7c3aed);
+            color: #fff;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-left: 8px;
+            display: inline-block;
+            vertical-align: middle;
+        }
 
         @media (max-width: 600px) {
             .profile-btn { position: relative; top: 0; margin-bottom: 20px; justify-content: center; }
             header { display: flex; flex-direction: column; align-items: center; }
+            .song-item { flex-wrap: wrap; gap: 15px; }
+            .song-cover { width: 60px; height: 60px; }
         }
     </style>
 </head>
@@ -92,7 +131,7 @@
                 51Invalidov SoundCloud
             </a>
             <h1>51music</h1>
-            <p>музыка еееееее </p>
+            <p>музыка еееееее</p>
         </header>
         <div class="song-list" id="songList"></div>
     </div>
@@ -100,11 +139,11 @@
     <script>
         // Данные вшиты прямо в код
         const songsData = [
-            { "id": 1, "title": "Ж И Р О Б А С", "genre": "Сингл", "file": "жиробас (банкомат).mp3", "cover": "covers/1.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
-            { "id": 2, "title": "ЖИРНЫЙ  ПИДОР", "genre": "Сниппет / Сингл", "file": "жирный пидор.MP3", "cover": "covers/2.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
-            { "id": 3, "title": "ПУЗЫРИЩЕ", "genre": "Сниппет / Сингл", "file": "пузырище.MP3", "cover": "covers/3.png", "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
-            { "id": 4, "title": "Я СОВСЕМ ПУЗЫРЬ", "genre": "Сниппет / Сингл", "file": "я совсем пузырь.mp3", "cover": "covers/4.png", "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" }
-            { "id": 5, "title": "Я ЖИРНЫЙ", "genre": "Демо версия", "file": "Я ЖИРНЫЙ.mp3", "cover": "covers/play.png", "sc_link": "" }
+            { "id": 1, "title": "Ж И Р О Б А С", "genre": "Сингл", "genreType": "default", "file": "жиробас (банкомат).mp3", "cover": "covers/1.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
+            { "id": 2, "title": "ЖИРНЫЙ ПИДОР", "genre": "Сниппет / Сингл", "genreType": "default", "file": "жирный пидор.MP3", "cover": "covers/2.png", "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
+            { "id": 3, "title": "ПУЗЫРИЩЕ", "genre": "Сниппет / Сингл", "genreType": "default", "file": "пузырище.MP3", "cover": "covers/3.png", "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
+            { "id": 4, "title": "Я СОВСЕМ ПУЗЫРЬ", "genre": "Сниппет / Сингл", "genreType": "default", "file": "я совсем пузырь.mp3", "cover": "covers/4.png", "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" },
+            { "id": 5, "title": "Я ЖИРНЫЙ", "genre": "Эксклюзив", "genreType": "exclusive", "file": "Я ЖИРНЫЙ.mp3", "cover": "covers/play.png", "sc_link": "" }
         ];
 
         function renderList() {
@@ -113,13 +152,36 @@
                 const item = document.createElement('a');
                 item.href = `songs.html?id=${song.id}`;
                 item.className = 'song-item';
+                
+                // Для эксклюзива добавляем класс
+                if (song.genreType === 'exclusive') {
+                    item.classList.add('exclusive');
+                }
+                
+                // Жанр с классом для стиля
+                const genreClass = song.genreType === 'exclusive' ? 'exclusive' : 'default';
+                
+                // Бейджик для эксклюзива
+                let demoBadge = '';
+                if (song.genreType === 'exclusive') {
+                    demoBadge = `<span class="demo-badge">★ Демо</span>`;
+                }
+                
+                // Бейджик SoundCloud (скрываем для эксклюзива)
+                let scBadgeClass = 'sc-badge';
+                let scBadgeText = '▶ Слушать на SC';
+                if (song.genreType === 'exclusive' || !song.sc_link) {
+                    scBadgeClass += ' hidden';
+                    scBadgeText = '▶ Эксклюзив';
+                }
+                
                 item.innerHTML = `
                     <img src="${song.cover}" alt="${song.title}" class="song-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23333%22/%3E%3Ctext x=%2220%22 y=%2245%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%23fff%22%3E51%3C/text%3E%3C/svg%3E'">
                     <div class="song-info">
-                        <div class="song-genre">${song.genre}</div>
-                        <div class="song-title">${song.title}</div>
+                        <div class="song-genre ${genreClass}">${song.genre}</div>
+                        <div class="song-title">${song.title} ${demoBadge}</div>
                     </div>
-                    <div class="sc-badge">▶ Слушать на SC</div>
+                    <div class="${scBadgeClass}">${scBadgeText}</div>
                 `;
                 container.appendChild(item);
             });
