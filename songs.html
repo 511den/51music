@@ -28,7 +28,21 @@
         }
         .cover-img { width: 100%; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.5); }
         .track-info { display: flex; flex-direction: column; justify-content: center; }
-        .track-genre { color: #ff5500; text-transform: uppercase; letter-spacing: 1px; font-weight: 600; font-size: 0.85rem; }
+        .track-genre {
+            text-transform: uppercase; letter-spacing: 1px; font-weight: 600; font-size: 0.85rem;
+        }
+        .track-genre.exclusive {
+            color: #b47cff;
+            background: rgba(180, 124, 255, 0.15);
+            padding: 4px 12px;
+            border-radius: 30px;
+            display: inline-block;
+            width: fit-content;
+            border: 1px solid rgba(180, 124, 255, 0.3);
+            box-shadow: 0 0 15px rgba(180, 124, 255, 0.2);
+            text-shadow: 0 0 8px rgba(180, 124, 255, 0.3);
+        }
+        .track-genre.default { color: #ff5500; }
         .track-title { font-size: 2.2rem; font-weight: 700; margin: 5px 0 15px; }
 
         .audio-wrapper {
@@ -64,6 +78,39 @@
         .lyrics-text::-webkit-scrollbar { width: 4px; }
         .lyrics-text::-webkit-scrollbar-thumb { background: rgba(255, 85, 0, 0.3); border-radius: 4px; }
 
+        /* Стиль для заглушки «Нет текста» */
+        .no-lyrics-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 16px;
+            border: 1px dashed rgba(255, 255, 255, 0.08);
+            color: #6a648a;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+        }
+        .no-lyrics-message span {
+            display: block;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            opacity: 0.4;
+        }
+        .demo-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #b47cff, #7c3aed);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 4px 14px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            box-shadow: 0 0 20px rgba(124, 58, 237, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            margin-top: 6px;
+        }
+
         @media (max-width: 800px) {
             .top-row { grid-template-columns: 1fr; }
             .lyrics-grid { grid-template-columns: 1fr; }
@@ -85,6 +132,7 @@
             "id": 1,
             "title": "Ж И Р О Б А С",
             "genre": "Сниппет / Сингл",
+            "genreType": "default",
             "file": "жиробас (банкомат).mp3",
             "cover": "covers/1.png",
             "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -95,6 +143,7 @@
             "id": 2,
             "title": "Ж И Р Н Ы Й  П И Д О Р",
             "genre": "Сниппет / Сингл",
+            "genreType": "default",
             "file": "жирный пидор.MP3",
             "cover": "covers/2.png",
             "soundcloud": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -105,6 +154,7 @@
             "id": 3,
             "title": "П У З Ы Р И Щ Е",
             "genre": "Сниппет / Сингл",
+            "genreType": "default",
             "file": "пузырище.MP3",
             "cover": "covers/3.png",
             "soundcloud": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
@@ -115,11 +165,23 @@
             "id": 4,
             "title": "Я С О В С Е М П У З Ы Р Ь",
             "genre": "Сниппет / Сингл",
+            "genreType": "default",
             "file": "я совсем пузырь.mp3",
             "cover": "covers/4.png",
             "soundcloud": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing",
             "lyrics_cover": "Следим за весом плохо\nИ мы знаем это\nЯ съедаю бургер\nобжираюсь знатно\nНо я голоден, бигхита не хватает вовсе \nЯ проебываю деньги, выпиваю колу всю\nНо, выпив досуха ее,я ощущаю жажду\nберу картошку фри, после съедаю сразу\nНо в них калорий не нашёл\nЗабираю комбо\nПревращаю в порошок\nПоглощаю разом\n\nИ вдруг я понимаю\nЧто жратвы не осталось\nА эти жажда и голод\nНавсегда со мной\nИ я каждый день снова\nПо бигхиту съедаю\nДиета не помогает\nЯ совсем пузырь\n\nВокруг бургеркинг\nПолный разных бигмаков\nВсевозможных комбо\nИ вкуснейших крыльев\nОтражающих складки,\nПроникающих в недра\nподкожного жира\nИ сгорающих в нём\n\nИ ТУТ Я ПОНИМАЮ\nЧТО БАБЛА НЕ ОСТАЛОСЬ\nА ЭТА ТЯГА К ФАСТФУДУ\nНАВСЕГДА СО МНОЙ\nИ Я КАЖДЫЙ ДЕНЬ СНОВА\nВ НИЩЕТЕ ПОМИРАЮ\nМАМКА УЖЕ НЕ ПОМОЖЕТ \nЯ СОВСЕМ НИЩИЙ\n\nВОКРУГ ЦЕЛЫЙ МАК\nПОЛНЫЙ ВКУСНЫХ БИГХИТОВ\nВСЕВОЗМОЖНЫХ ПРЕМЬЕРОВ\nНО ИХ БОЛЬШОЙ ЦЕННИК\nОТРАЖАЮЩИХ БЕДНОСТЬ,\nПРОНИКАЮЩИЙ В НЕДРА ПУСТОГО КОШЕЛЬКА\nИ РАСТВОРЯЮЩИХ ЖИР\n\nздесь нету текста мы аутист",
             "lyrics_original": "Мы танцуем плохо,\nИ мы знаем это.\nЯ целую лоб твой,\nОбнимаю крепко.\nНо я голоден, объятий не хватает вовсе,\nЯ вскрываю твои вены, выпиваю кровь всю.\nНо, выпив досуха тебя, я ощущаю жажду.\nРежу тебя на куски, после съедаю каждый,\nНо в них тебя я не нашёл.\nРасщепляю кости,\nПревращаю в порошок,\nЗапускаю в ноздри.\n\nИ вдруг я понимаю,\nЧто тебя не осталось,\nА эти жажда и голод\nНавсегда со мной.\nИ я каждый день снова\nО тебе вспоминаю,\nНо тебя не существует,\nЯ совсем один.\nВокруг целый мир,\nПолный галлюцинаций,\nВсевозможных зверей,\nИх прекрасных красных глаз,\nОтражающих небо;\nПроникающих в недра\nРаскалённого солнца,\nИ сгорающих в нём."
+          },
+          {
+            "id": 5,
+            "title": "Я ЖИРНЫЙ",
+            "genre": "Эксклюзив",
+            "genreType": "exclusive",
+            "file": "Я ЖИРНЫЙ.mp3",
+            "cover": "covers/play.png",
+            "soundcloud": "",
+            "lyrics_cover": null,
+            "lyrics_original": null
           }
         ];
 
@@ -128,31 +190,63 @@
         const song = ALL_SONGS.find(s => s.id === id);
 
         if (song) {
+            // Определяем класс для жанра
+            const genreClass = song.genreType === 'exclusive' ? 'exclusive' : 'default';
+
+            // Формируем блок с текстами: если оба null — показываем заглушку
+            let lyricsHtml = '';
+            if (song.lyrics_cover === null && song.lyrics_original === null) {
+                lyricsHtml = `
+                    <div class="no-lyrics-message">
+                        <span>🎵</span>
+                        Текст отсутствует<br>
+                        <small style="color:#4a4568;">Демо-версия</small>
+                    </div>
+                `;
+            } else {
+                lyricsHtml = `
+                    <div class="lyrics-grid">
+                        <div class="lyrics-block">
+                            <h3>Переделанный текст</h3>
+                            <div class="lyrics-text">${song.lyrics_cover}</div>
+                        </div>
+                        <div class="lyrics-block original">
+                            <h3>Оригинальный текст</h3>
+                            <div class="lyrics-text">${song.lyrics_original}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Ссылка на SoundCloud отображается только если НЕ эксклюзив и есть ссылка
+            let soundcloudHtml = '';
+            if (song.genreType !== 'exclusive' && song.soundcloud) {
+                soundcloudHtml = `<a href="${song.soundcloud}" target="_blank" class="soundcloud-link">🎧 Слушать на SoundCloud</a>`;
+            }
+
+            // Бейджик "Демо версия" для эксклюзива
+            let demoBadge = '';
+            if (song.genreType === 'exclusive') {
+                demoBadge = `<span class="demo-badge">★ Демо версия</span>`;
+            }
+
             document.getElementById('songCard').innerHTML = `
                 <div class="top-row">
                     <img src="${song.cover}" alt="${song.title}" class="cover-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%23333%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2230%22 fill=%22%23fff%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E51%3C/text%3E%3C/svg%3E'">
                     <div class="track-info">
-                        <span class="track-genre">${song.genre}</span>
+                        <span class="track-genre ${genreClass}">${song.genre}</span>
                         <h2 class="track-title">${song.title}</h2>
+                        ${demoBadge}
                         <div class="audio-wrapper">
                             <audio controls preload="metadata">
                                 <source src="${song.file}" type="audio/mpeg">
                                 Ваш браузер не поддерживает HTML5 аудио.
-                                </audio>
-                            </div>
-                        <a href="${song.soundcloud}" target="_blank" class="soundcloud-link">🎧 Слушать на SoundCloud</a>
+                            </audio>
+                        </div>
+                        ${soundcloudHtml}
                     </div>
                 </div>
-                <div class="lyrics-grid">
-                    <div class="lyrics-block">
-                        <h3>Переделанный текст</h3>
-                        <div class="lyrics-text">${song.lyrics_cover}</div>
-                    </div>
-                    <div class="lyrics-block original">
-                        <h3>Оригинальный текст</h3>
-                        <div class="lyrics-text">${song.lyrics_original}</div>
-                    </div>
-                </div>
+                ${lyricsHtml}
             `;
         } else {
             document.getElementById('songCard').innerHTML = '<p style="text-align:center; color:#ff5500; font-size:1.5rem;">Песня не найдена</p>';
