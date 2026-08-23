@@ -369,10 +369,10 @@
             {
                 "id": 5,
                 "title": "Я ЖИРНЫЙ",
-                "genre": "Сниппет / НеСингл",
+                "genre": "Cниппет / НеСингл",
                 "isDemo": true,
                 "isExclusive": true,
-                "file": "Я ЖИРНЫЙ.mp3",
+                "file": "я жирный.mp3",
                 "cover": "covers/play.png",
                 "soundcloud": "",
                 "lyrics_cover": null,
@@ -415,4 +415,66 @@
                     <div class="lyrics-grid">
                         <div class="lyrics-block">
                             <h3><span class="icon">🎤</span> Переделанный текст</h3>
-                            <div class="ly
+                            <div class="lyrics-text">${song.lyrics_cover}</div>
+                        </div>
+                        <div class="lyrics-block original">
+                            <h3><span class="icon">📝</span> Оригинальный текст</h3>
+                            <div class="lyrics-text">${song.lyrics_original}</div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Кнопки действий
+            let actionButtons = '';
+            if (song.isExclusive) {
+                actionButtons += `<span class="action-btn exclusive">⭐ Эксклюзивный релиз</span>`;
+            }
+            if (song.isDemo) {
+                actionButtons += `<span class="action-btn demo">🎵 Демо-версия</span>`;
+            }
+            if (!song.isExclusive && song.soundcloud) {
+                actionButtons += `<a href="${song.soundcloud}" target="_blank" class="action-btn soundcloud">🎧 Слушать на SoundCloud</a>`;
+            }
+
+            // Обложка с fallback
+            let coverImg = song.cover;
+            if (!coverImg || coverImg === 'covers/play.png') {
+                coverImg = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect width="400" height="400" fill="%23221f33"/%3E%3Ccircle cx="200" cy="200" r="80" fill="%23ff5500" opacity="0.3"/%3E%3Ctext x="200" y="215" font-family="sans-serif" font-size="40" fill="%23fff" text-anchor="middle"%3E51%3C/text%3E%3C/svg%3E';
+            }
+
+            document.getElementById('songCard').innerHTML = `
+                <div class="top-row">
+                    <div class="cover-wrapper">
+                        <img src="${coverImg}" alt="${song.title}" class="cover-img">
+                    </div>
+                    <div class="track-info">
+                        <div class="genre-container">${genreTags}</div>
+                        <h1 class="track-title">${song.title}</h1>
+                        <div class="audio-wrapper">
+                            <audio controls preload="metadata">
+                                <source src="${song.file}" type="audio/mpeg">
+                                Ваш браузер не поддерживает HTML5 аудио.
+                            </audio>
+                        </div>
+                        <div class="action-buttons">
+                            ${actionButtons}
+                        </div>
+                    </div>
+                </div>
+                <div class="lyrics-section">
+                    ${lyricsHtml}
+                </div>
+            `;
+        } else {
+            document.getElementById('songCard').innerHTML = `
+                <div style="text-align:center; padding:60px 20px;">
+                    <h2 style="color:#ff5500; font-size:2rem;">❌ Песня не найдена</h2>
+                    <p style="color:#8b85a7; margin-top:10px;">Вернитесь на главную и выберите другой трек</p>
+                    <a href="index.html" style="display:inline-block; margin-top:20px; color:#ff5500; text-decoration:none; border:1px solid rgba(255,85,0,0.3); padding:10px 30px; border-radius:30px;">← На главную</a>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>
