@@ -134,116 +134,136 @@
         <div class="song-list" id="songList"></div>
     </div>
 
-    <script src="player.js"></script>
-    <script>
-        // ПЕСНИ ЛЕЖАТ В КОРНЕ
-        const songsData = [
-            { 
-                "id": 1, 
-                "title": "Ж И Р О Б А С", 
-                "genre": "Сингл", 
-                "genreType": "default", 
-                "file": "1.MP3",
-                "cover": "covers/1.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
-            },
-            { 
-                "id": 2, 
-                "title": "ЖИРНЫЙ ПИДОР", 
-                "genre": "Сниппет / Сингл", 
-                "genreType": "default", 
-                "file": "2.MP3",
-                "cover": "covers/2.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
-            },
-            { 
-                "id": 3, 
-                "title": "ПУЗЫРИЩЕ", 
-                "genre": "Сниппет / Сингл", 
-                "genreType": "default", 
-                "file": "3.MP3",
-                "cover": "covers/3.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
-            },
-            { 
-                "id": 4, 
-                "title": "Я СОВСЕМ ПУЗЫРЬ", 
-                "genre": "Сниппет / Сингл", 
-                "genreType": "default", 
-                "file": "4.MP3",
-                "cover": "covers/4.png", 
-                "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
-            },
-            { 
-                "id": 5, 
-                "title": "Я ЖИРНЫЙ", 
-                "genre": "Эксклюзив", 
-                "genreType": "exclusive", 
-                "file": "5.MP3",
-                "cover": "covers/play.png", 
-                "sc_link": "" 
-            }
-        ];
-
-        function renderList() {
-            const container = document.getElementById('songList');
-            container.innerHTML = '';
-            songsData.forEach(song => {
-                const item = document.createElement('a');
-                item.href = `songs.html?id=${song.id}`;
-                item.className = 'song-item';
-                
-                if (song.genreType === 'exclusive') {
-                    item.classList.add('exclusive');
-                }
-                
-                const genreClass = song.genreType === 'exclusive' ? 'exclusive' : 'default';
-                
-                let demoBadge = '';
-                if (song.genreType === 'exclusive') {
-                    demoBadge = `<span class="demo-badge">★ Демо</span>`;
-                }
-                
-                let scBadgeClass = 'sc-badge';
-                let scBadgeText = '▶ Слушать на SC';
-                if (song.genreType === 'exclusive' || !song.sc_link) {
-                    scBadgeClass += ' hidden';
-                    scBadgeText = '▶ Эксклюзив';
-                }
-                
-                item.innerHTML = `
-                    <img src="${song.cover}" alt="${song.title}" class="song-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23333%22/%3E%3Ctext x=%2220%22 y=%2245%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%23fff%22%3E51%3C/text%3E%3C/svg%3E'">
-                    <div class="song-info">
-                        <div class="song-genre ${genreClass}">${song.genre}</div>
-                        <div class="song-title">${song.title} ${demoBadge}</div>
-                    </div>
-                    <div class="${scBadgeClass}">${scBadgeText}</div>
-                `;
-                container.appendChild(item);
-            });
+<script src="player.js"></script>
+<script>
+    // ПЕСНИ ЛЕЖАТ В КОРНЕ
+    const songsData = [
+        { 
+            "id": 1, 
+            "title": "Ж И Р О Б А С", 
+            "genre": "Сингл", 
+            "genreType": "default", 
+            "file": "1.MP3",
+            "cover": "covers/1.png", 
+            "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-o-b-a-s?si=cf2a8b4c02884c308d79d3e9a16a605d&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+        },
+        { 
+            "id": 2, 
+            "title": "ЖИРНЫЙ ПИДОР", 
+            "genre": "Сниппет / Сингл", 
+            "genreType": "default", 
+            "file": "2.MP3",
+            "cover": "covers/2.png", 
+            "sc_link": "https://soundcloud.com/denis-invalidov/zh-i-r-n-y-j-p-i-d-o-r?si=38ba0b47cc164648934b96123752f881&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+        },
+        { 
+            "id": 3, 
+            "title": "ПУЗЫРИЩЕ", 
+            "genre": "Сниппет / Сингл", 
+            "genreType": "default", 
+            "file": "3.MP3",
+            "cover": "covers/3.png", 
+            "sc_link": "https://soundcloud.com/denis-invalidov/p-u-z-y-r-i-shh-e?si=77e834d8edfa4022b35542ef85cc9c28&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+        },
+        { 
+            "id": 4, 
+            "title": "Я СОВСЕМ ПУЗЫРЬ", 
+            "genre": "Сниппет / Сингл", 
+            "genreType": "default", 
+            "file": "4.MP3",
+            "cover": "covers/4.png", 
+            "sc_link": "https://soundcloud.com/denis-invalidov/ya-s-o-v-s-e-m-p-u-z-y-r?si=203f851666124ec483e5e9744c4dfc89&utm_source=clipboard&utm_medium=text&utm_campaign=social_sharing" 
+        },
+        { 
+            "id": 5, 
+            "title": "Я ЖИРНЫЙ", 
+            "genre": "Эксклюзив", 
+            "genreType": "exclusive", 
+            "file": "5.MP3",
+            "cover": "covers/play.png", 
+            "sc_link": "" 
         }
-        renderList();
+    ];
 
-        // Восстановление плеера при загрузке
-        window.addEventListener('load', function() {
-            try {
-                const saved = localStorage.getItem('globalPlayerState');
-                if (saved) {
-                    const data = JSON.parse(saved);
-                    if (data.song && data.isPlaying) {
-                        const song = songsData.find(s => s.id === data.song.id);
-                        if (song) {
-                            const audio = new Audio();
-                            audio.src = song.file;
-                            audio.currentTime = data.currentTime || 0;
-                            audio.volume = data.volume || 1;
-                            audio.play().catch(() => {});
-                            window.initGlobalPlayer(song, audio);
+    function renderList() {
+        const container = document.getElementById('songList');
+        container.innerHTML = '';
+        songsData.forEach(song => {
+            const item = document.createElement('a');
+            item.href = `songs.html?id=${song.id}`;
+            item.className = 'song-item';
+            
+            if (song.genreType === 'exclusive') {
+                item.classList.add('exclusive');
+            }
+            
+            const genreClass = song.genreType === 'exclusive' ? 'exclusive' : 'default';
+            
+            let demoBadge = '';
+            if (song.genreType === 'exclusive') {
+                demoBadge = `<span class="demo-badge">★ Демо</span>`;
+            }
+            
+            let scBadgeClass = 'sc-badge';
+            let scBadgeText = '▶ Слушать на SC';
+            if (song.genreType === 'exclusive' || !song.sc_link) {
+                scBadgeClass += ' hidden';
+                scBadgeText = '▶ Эксклюзив';
+            }
+            
+            item.innerHTML = `
+                <img src="${song.cover}" alt="${song.title}" class="song-cover" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2280%22 height=%2280%22%3E%3Crect width=%2280%22 height=%2280%22 fill=%22%23333%22/%3E%3Ctext x=%2220%22 y=%2245%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%23fff%22%3E51%3C/text%3E%3C/svg%3E'">
+                <div class="song-info">
+                    <div class="song-genre ${genreClass}">${song.genre}</div>
+                    <div class="song-title">${song.title} ${demoBadge}</div>
+                </div>
+                <div class="${scBadgeClass}">${scBadgeText}</div>
+            `;
+            container.appendChild(item);
+        });
+    }
+    renderList();
+
+    // Восстановление плеера при загрузке
+    window.addEventListener('load', function() {
+        try {
+            const saved = localStorage.getItem('globalPlayerState');
+            if (saved) {
+                const data = JSON.parse(saved);
+                if (data.songId) {
+                    // Находим песню по id (НЕ по file!)
+                    const song = songsData.find(s => s.id === data.songId);
+                    if (song) {
+                        // Проверяем, что файл существует, прежде чем создавать аудио
+                        const audio = new Audio();
+                        audio.src = song.file;
+                        
+                        // Проверяем загрузку файла
+                        audio.addEventListener('error', function() {
+                            console.warn('Файл не найден, очищаем состояние');
+                            localStorage.removeItem('globalPlayerState');
+                        });
+                        
+                        audio.currentTime = data.currentTime || 0;
+                        audio.volume = data.volume || 1;
+                        
+                        if (data.isPlaying) {
+                            audio.play().catch(() => {
+                                // Если не получилось воспроизвести, не показываем ошибку
+                            });
                         }
+                        window.initGlobalPlayer(song, audio);
+                    } else {
+                        // Если песня не найдена по id, очищаем состояние
+                        localStorage.removeItem('globalPlayerState');
                     }
                 }
-            } catch(e) {}
-        });
-    </script>
+            }
+        } catch(e) {
+            // Если ошибка, очищаем состояние
+            localStorage.removeItem('globalPlayerState');
+        }
+    });
+</script>
 </body>
 </html>
