@@ -244,17 +244,6 @@
         document.getElementById('globalMiniPlayer')?.classList.remove('visible');
     }
 
-    // Проверка, существует ли файл
-    function fileExists(url) {
-        return new Promise((resolve) => {
-            const xhr = new XMLHttpRequest();
-            xhr.open('HEAD', url, true);
-            xhr.onload = () => resolve(xhr.status >= 200 && xhr.status < 300);
-            xhr.onerror = () => resolve(false);
-            xhr.send();
-        });
-    }
-
     window.initGlobalPlayer = function(song, audioElement) {
         state.audio = audioElement;
         state.currentSong = song;
@@ -293,23 +282,26 @@
         return state.currentSong !== null;
     };
 
-    // Функция для очистки старого состояния
-    window.clearPlayerState = function() {
-        localStorage.removeItem('globalPlayerState');
-        if (state.audio) {
-            state.audio.pause();
-            state.audio = null;
+    window.restorePlayer = function(song, currentTime, isPlaying, volume) {
+        if (!song) return;
+        
+        const audio = new Audio();
+        audio.src = song.file;
+        audio.currentTime = currentTime || 0;
+        audio.volume = volume || 1;
+        
+        if (isPlaying) {
+            audio.play().catch(() => {});
         }
-        state.currentSong = null;
-        state.isPlaying = false;
-        document.getElementById('globalMiniPlayer')?.classList.remove('visible');
+        
+        window.initGlobalPlayer(song, audio);
+        return audio;
     };
 
     // Сохраняем состояние
     setInterval(() => {
         if (state.currentSong && state.audio && state.audio.src) {
             try {
-                // Проверяем, что файл существует
                 const saved = {
                     songId: state.currentSong.id,
                     isPlaying: state.isPlaying,
