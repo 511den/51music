@@ -1,6 +1,5 @@
 // player.js - Глобальный контроллер плеера
 (function() {
-    // Состояние плеера
     const state = {
         currentSong: null,
         isPlaying: false,
@@ -10,14 +9,12 @@
         audio: null
     };
 
-    // DOM элементы мини-плеера (будут созданы динамически)
     let miniPlayer = null;
     let miniPlayBtn = null;
     let miniProgress = null;
     let miniTitle = null;
     let miniCloseBtn = null;
 
-    // Создаём мини-плеер
     function createMiniPlayer() {
         if (document.getElementById('globalMiniPlayer')) return;
 
@@ -45,7 +42,6 @@
             </div>
         `;
 
-        // Стили для мини-плеера
         const style = document.createElement('style');
         style.textContent = `
             #globalMiniPlayer {
@@ -188,7 +184,6 @@
         document.head.appendChild(style);
         document.body.appendChild(miniPlayer);
 
-        // Сохраняем ссылки на элементы
         miniPlayBtn = document.getElementById('miniPlayBtn');
         miniProgress = document.getElementById('miniProgressFill');
         miniTitle = document.getElementById('miniTitle');
@@ -196,11 +191,9 @@
         const miniCover = document.getElementById('miniCover');
         const miniTime = document.getElementById('miniTime');
 
-        // Обработчики
         miniPlayBtn.addEventListener('click', togglePlay);
         miniCloseBtn.addEventListener('click', hideMiniPlayer);
 
-        // Клик по прогрессу
         const track = miniPlayer.querySelector('.mini-progress-track');
         track.addEventListener('click', (e) => {
             if (!state.audio || !state.duration) return;
@@ -253,12 +246,10 @@
         document.getElementById('globalMiniPlayer')?.classList.remove('visible');
     }
 
-    // Главная функция для инициализации плеера с треком
     window.initGlobalPlayer = function(song, audioElement) {
         state.audio = audioElement;
         state.currentSong = song;
 
-        // Подписываемся на события аудио
         audioElement.addEventListener('play', () => {
             state.isPlaying = true;
             updateMiniPlayer();
@@ -293,7 +284,6 @@
         return state.currentSong !== null;
     };
 
-    // Сохраняем состояние
     setInterval(() => {
         if (state.currentSong && state.audio) {
             try {
