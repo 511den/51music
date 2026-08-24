@@ -188,8 +188,6 @@
         miniProgress = document.getElementById('miniProgressFill');
         miniTitle = document.getElementById('miniTitle');
         miniCloseBtn = document.getElementById('miniCloseBtn');
-        const miniCover = document.getElementById('miniCover');
-        const miniTime = document.getElementById('miniTime');
 
         miniPlayBtn.addEventListener('click', togglePlay);
         miniCloseBtn.addEventListener('click', hideMiniPlayer);
@@ -246,6 +244,17 @@
         document.getElementById('globalMiniPlayer')?.classList.remove('visible');
     }
 
+    // Проверка, существует ли файл
+    function fileExists(url) {
+        return new Promise((resolve) => {
+            const xhr = new XMLHttpRequest();
+            xhr.open('HEAD', url, true);
+            xhr.onload = () => resolve(xhr.status >= 200 && xhr.status < 300);
+            xhr.onerror = () => resolve(false);
+            xhr.send();
+        });
+    }
+
     window.initGlobalPlayer = function(song, audioElement) {
         state.audio = audioElement;
         state.currentSong = song;
@@ -284,15 +293,30 @@
         return state.currentSong !== null;
     };
 
+    // Функция для очистки старого состояния
+    window.clearPlayerState = function() {
+        localStorage.removeItem('globalPlayerState');
+        if (state.audio) {
+            state.audio.pause();
+            state.audio = null;
+        }
+        state.currentSong = null;
+        state.isPlaying = false;
+        document.getElementById('globalMiniPlayer')?.classList.remove('visible');
+    };
+
+    // Сохраняем состояние
     setInterval(() => {
-        if (state.currentSong && state.audio) {
+        if (state.currentSong && state.audio && state.audio.src) {
             try {
-                localStorage.setItem('globalPlayerState', JSON.stringify({
-                    song: state.currentSong,
+                // Проверяем, что файл существует
+                const saved = {
+                    songId: state.currentSong.id,
                     isPlaying: state.isPlaying,
                     currentTime: state.audio.currentTime || 0,
                     volume: state.audio.volume || 1
-                }));
+                };
+                localStorage.setItem('globalPlayerState', JSON.stringify(saved));
             } catch(e) {}
         }
     }, 3000);
