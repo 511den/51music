@@ -251,7 +251,6 @@
             state.isPlaying = false;
         }
         document.getElementById('globalMiniPlayer')?.classList.remove('visible');
-        // Не удаляем аудио, чтобы можно было продолжить
     }
 
     // Главная функция для инициализации плеера с треком
@@ -282,12 +281,10 @@
             updateMiniPlayer();
         });
 
-        // Показываем мини-плеер
         showMiniPlayer(song);
         updateMiniPlayer();
     };
 
-    // Для совместимости со страницей песен
     window.getGlobalAudio = function() {
         return state.audio;
     };
@@ -296,7 +293,7 @@
         return state.currentSong !== null;
     };
 
-    // Сохраняем состояние при изменениях
+    // Сохраняем состояние
     setInterval(() => {
         if (state.currentSong && state.audio) {
             try {
