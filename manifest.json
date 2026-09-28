@@ -1,0 +1,14 @@
+{
+  "name": "51music",
+  "short_name": "51music",
+  "description": "Пародии и сниппеты — 51Invalidov",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0f0c20",
+  "theme_color": "#ff5500",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
