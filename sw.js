@@ -1,14 +1,16 @@
-const CACHE = '51music-v3';
+const CACHE = '51music-v9-singles-art';
 const ASSETS = [
   'index.html',
   'songs.html',
   'manifest.json',
   'songs.json',
-  'icons/icon-192.png',
-  'icons/icon-512.png',
-  'icons/apple-touch-icon.png',
+  'icon-192.png',
+  'icon-512.png',
+  'apple-touch-icon.png',
   'covers/play.png',
-  'covers/og-image.png',
+  'og-image.png',
+  'covers/kilotonna.svg?v=4',
+  'covers/singles.svg?v=2',
   'favicon.png'
 ];
 

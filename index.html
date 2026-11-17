@@ -372,6 +372,21 @@
         }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
         body.has-mini .toast { bottom: 128px; }
+
+        .library-heading { font-family: 'Russo One', sans-serif; font-size: 1.4rem; margin-bottom: 22px; }
+        .album-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 26px; }
+        .album-card { display: block; background: var(--label); color: var(--ink); padding: 16px 16px 20px; border-radius: 6px; text-decoration: none; box-shadow: 0 10px 24px #0006; transform: rotate(-1deg); transition: transform .2s; }
+        .album-card:nth-child(2) { transform: rotate(1deg); }
+        .album-card:hover { transform: translateY(-5px); }
+        .album-card img { display:block; width:100%; aspect-ratio:1; object-fit:cover; border-radius:3px; }
+        .album-card h3 { font-family:'Russo One',sans-serif; margin:16px 0 6px; font-size:clamp(1rem,3vw,1.5rem); }
+        .album-card p { color:var(--ink-soft); }
+        .album-header { display:grid; grid-template-columns:180px 1fr; gap:28px; align-items:center; margin-bottom:32px; }
+        .album-header img { width:100%; border:8px solid var(--label); transform:rotate(-2deg); box-shadow:0 10px 24px #0006; }
+        .album-header h2 { font-family:'Russo One',sans-serif; font-size:clamp(1.5rem,5vw,2.8rem); margin:8px 0; overflow-wrap:anywhere; }
+        .album-header p { color:var(--muted); margin-bottom:18px; }
+        .album-play { font:700 1rem 'PT Sans',sans-serif; cursor:pointer; background:var(--yellow); color:var(--ink); border:0; padding:12px 22px; border-radius:6px; }
+        @media(max-width:480px) { .album-grid {gap:14px;} .album-card {padding:9px 9px 16px;} .album-header {grid-template-columns:105px 1fr;gap:18px;} }
     </style>
 </head>
 <body>
@@ -384,7 +399,7 @@
                 <h1 class="logo">51music</h1>
                 <p class="tagline">музыка еееееее</p>
             </header>
-            <div class="song-list" id="songList"></div>
+            <div id="albumLibrary"></div><div id="albumDetail"></div><div class="song-list" id="songList"></div>
         </div>
 
         <div id="view-song" class="view">
@@ -423,6 +438,10 @@
         const FALLBACK_SVG_68 = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2268%22 height=%2268%22%3E%3Crect width=%2268%22 height=%2268%22 fill=%22%232b2620%22/%3E%3Ctext x=%2216%22 y=%2240%22 font-family=%22sans-serif%22 font-size=%2214%22 fill=%22%23f3ead2%22%3E51%3C/text%3E%3C/svg%3E';
         const FALLBACK_SVG_400 = 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22400%22%3E%3Crect width=%22400%22 height=%22400%22 fill=%22%232b2620%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-family=%22sans-serif%22 font-size=%2230%22 fill=%22%23f3ead2%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22%3E51%3C/text%3E%3C/svg%3E';
 
+        const ALBUMS = [
+            { id:'kilotonna', title:'КИЛОТОННА', cover:'covers/kilotonna.svg?v=4', type:'Альбом' },
+            { id:'singles', title:'Синглы', cover:'covers/singles.svg?v=2', type:'Сборник' }
+        ];
         let SONGS = [];
         let currentIndex = -1;
         let pendingAutoplay = false;
@@ -470,7 +489,7 @@
         function router() {
             const m = location.hash.match(/^#song\/(\d+)/);
             if (m) showSongView(parseInt(m[1], 10));
-            else showListView();
+            else showListView(location.hash.match(/^#album\/(kilotonna|singles)$/)?.[1]);
             updateMiniVisibility();
         }
         window.addEventListener('hashchange', router);
@@ -480,10 +499,10 @@
             document.getElementById('view-song').classList.toggle('active', name === 'song');
         }
 
-        function showListView() {
+        function showListView(albumId) {
             setActiveView('list');
             document.title = '51music';
-            renderList();
+            renderAlbums(albumId);
         }
 
         function showSongView(id) {
@@ -493,27 +512,52 @@
                 document.getElementById('songCard').innerHTML = '<p style="text-align:center; color:var(--red); font-size:1.5rem;">Песня не найдена</p>';
                 return;
             }
+            document.getElementById('backLink').href = '#album/' + SONGS[idx].album;
             renderSongView(SONGS[idx]);
             loadTrack(idx);
         }
 
         function gotoRelative(delta) {
             if (!SONGS.length) return;
-            const base = currentIndex === -1 ? 0 : currentIndex;
-            const newIndex = (base + delta + SONGS.length) % SONGS.length;
-            location.hash = 'song/' + SONGS[newIndex].id;
+            const albumId = currentIndex === -1 ? 'kilotonna' : SONGS[currentIndex].album;
+            const queue = SONGS.filter(s => s.album === albumId);
+            const base = queue.findIndex(s => currentIndex !== -1 && s.id === SONGS[currentIndex].id);
+            const next = queue[(Math.max(0, base) + delta + queue.length) % queue.length];
+            pendingAutoplay = pendingAutoplay || !audio.paused;
+            location.hash = 'song/' + next.id;
         }
 
         // ---------- list view ----------
-        function renderList() {
+        function renderAlbums(albumId) {
+            const album = ALBUMS.find(a => a.id === albumId);
+            const library = document.getElementById('albumLibrary');
+            const detail = document.getElementById('albumDetail');
+            document.getElementById('songList').innerHTML = '';
+            if (!album) {
+                detail.innerHTML = '';
+                library.innerHTML = '<h2 class="library-heading">Альбомы</h2><div class="album-grid">' + ALBUMS.map(a => `<a class="album-card" href="#album/${a.id}"><img src="${a.cover}" alt="Обложка: ${a.title}"><h3>${a.title}</h3><p>${a.type} · ${SONGS.filter(s => s.album === a.id).length} треков</p></a>`).join('') + '</div>';
+                return;
+            }
+            library.innerHTML = '';
+            const tracks = SONGS.filter(s => s.album === album.id);
+            document.title = album.title + ' — 51music';
+            detail.innerHTML = `<a class="rewind-link" href="#">◀◀ все альбомы</a><div class="album-header"><img src="${album.cover}" alt="Обложка: ${album.title}"><div><span class="track-genre">${album.type}</span><h2>${album.title}</h2><p>51Invalidov · ${tracks.length} треков</p><button class="album-play" type="button">▶ Слушать альбом</button></div></div>`;
+            detail.querySelector('button').addEventListener('click', () => {
+                pendingAutoplay = true;
+                location.hash = 'song/' + tracks[0].id;
+            });
+            renderList(tracks);
+        }
+
+        function renderList(tracks = SONGS) {
             const container = document.getElementById('songList');
             container.innerHTML = '';
-            SONGS.forEach((song, i) => {
+            tracks.forEach((song, i) => {
                 const cover = song.cover || DEFAULT_COVER;
                 const tilt = (i % 2 === 0 ? -1 : 1) * (0.6 + (i % 3) * 0.3);
                 const scBadge = song.soundcloud
                     ? `<a href="${song.soundcloud}" target="_blank" rel="noopener" class="sc-badge">слушать на SC</a>`
-                    : `<span class="sc-badge sc-badge-disabled">демо</span>`;
+                    : `<span class="sc-badge sc-badge-disabled">${song.album === 'kilotonna' ? 'альбом' : 'демо'}</span>`;
                 const item = document.createElement('div');
                 item.className = 'track-row';
                 item.style.setProperty('--tilt', tilt.toFixed(2) + 'deg');
@@ -544,7 +588,7 @@
             const cover = song.cover || DEFAULT_COVER;
             const scLink = song.soundcloud
                 ? `<a href="${song.soundcloud}" target="_blank" class="soundcloud-link">🎧 слушать на SoundCloud</a>`
-                : `<span class="soundcloud-link soundcloud-link-disabled">🎧 демо — пока без SoundCloud</span>`;
+                : `<span class="soundcloud-link soundcloud-link-disabled">🎧 пока без SoundCloud</span>`;
             const coverLyrics = song.lyrics_cover || '<span class="lyrics-empty">текст скоро появится</span>';
             const originalLyrics = song.lyrics_original || '<span class="lyrics-empty">текст скоро появится</span>';
             const plays = getPlayCount(song.id);
@@ -560,7 +604,7 @@
                             <span class="washi-tape tape-br"></span>
                         </div>
                         <div class="track-info">
-                            <span class="track-genre">${song.genre}</span>
+                            <a class="track-genre" href="#album/${song.album}">${song.album === 'kilotonna' ? 'КИЛОТОННА' : 'Синглы'}</a>
                             <h2 class="track-title">${song.title}</h2>
                             <div class="play-count" id="playCount">${plays > 0 ? 'прослушано ' + plays + ' раз' : ''}</div>
                             <div class="transport">
@@ -634,7 +678,7 @@
             document.body.classList.add('has-mini');
 
             if (!isSameTrack) {
-                audio.src = song.file;
+                audio.src = song.file + (song.id === 3 ? '?v=20261118' : '');
             }
 
             const durEl = document.querySelector('#player .time.duration');
@@ -813,7 +857,7 @@
         });
         document.getElementById('backLink').addEventListener('click', (e) => {
             e.preventDefault();
-            location.hash = '';
+            location.hash = currentIndex === -1 ? '' : 'album/' + SONGS[currentIndex].album;
         });
 
         window.addEventListener('keydown', (e) => {
